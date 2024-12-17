@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration Form</title>
+    <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General Body Styling */
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+			margin-top: 5%;
+			margin-bottom: 5%;
+        }
+
+        /* Form Container Styling */
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+			margin-top: 5%;
+			margin-bottom: 5%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        /* Form Hover Effects */
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Header Style */
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        table td {
+            padding: 10px 5px;
+        }
+
+        /* Input Fields */
+        input[type="text"],
+        input[type="email"],
+		input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.2s ease-in-out;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+		input[type="number"]:focus,
+        input[type="date"]:focus
+		 {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Submit Button Styling */
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            background-color: rgb(0, 128, 192);
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        input[type="submit"]:hover {
+            background-color: rgb(0, 128, 255);
+        }
+
+        /* Buttons for View and Search */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .button-container button {
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Error Message Style */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Patient Registration Form</h2>
+
+        <!-- Display Error Message Example -->
+        <div class="error-message" th:if="${error}">
+            <p th:text="${error}"></p>
+        </div>
+
+        <!-- Employee Registration Form -->
+        <form th:action="@{/registerPatient}" th:object="${patient}" method="post">
+            <table>
+                <!-- Patient ID -->
+                <!--	<tr>
+					<td><label for="id">Patient ID:</label></td>
+					<td>
+						<input type="text" id="id" th:field="*{id}" placeholder="Enter Patient ID" required />
+					</td>
+				</tr> -->
+                <!-- Patient Name -->
+                <tr>
+                    <td><label for="patientName">Employee Name:</label></td>
+                    <td>
+                        <input type="text" id="patientName" th:field="*{patientName}" placeholder="Enter Patient Name" required />
+                    </td>
+                </tr>
+               
+                
+                <!-- Email Address -->
+                <tr>
+                    <td><label for="emailId">Email Address:</label></td>
+                    <td>
+                        <input type="email" id="emailId" th:field="*{emailId}" placeholder="Enter a valid email address"
+                            />
+                    </td>
+                </tr>
+
+                <!-- Number -->
+                <tr>
+                    <td><label for="contactNumber">Contact :</label></td>
+                    <td>
+                        <input type="number" id="contactNumber" th:field="*{contactNumber}" placeholder="Enter contact Number" maxlength="10" minlength="10" required />
+                    </td>
+                </tr>
+
+                 <!-- Age -->
+                 <tr>
+                    <td><label for="age">Age:</label></td>
+                    <td>
+                        <input type="number" id="age" th:field="*{age}" placeholder="Enter the age" required />
+                    </td>
+                </tr>
+
+                <!--DOB-->
+                <tr>
+                    <td><label for="dob">Date of Birth: </label> </td>
+                    <td>
+                        <input type="date" id="dob" th:field="*{dateOfBirth}" placeholder="Date " />
+                    </td>
+                </tr>
+
+                <!-- Address -->
+                <tr>
+                    <td><label for="address">Address:</label></td>
+                    <td>
+                        <input type="text" id="address" th:field="*{address}" placeholder="Enter the address" required />
+                    </td>
+                </tr>
+                <!-- Allergies -->
+                <tr>
+                    <td><label for="allergies">Allergies:</label></td>
+                    <td>
+                        <input type="text" id="allergies" th:field="*{allergies}" placeholder="Enter the allergies"  />
+                    </td>
+                </tr>
+
+                <!-- Medications -->
+                <tr>
+                    <td><label for="medications">Medications:</label></td>
+                    <td>
+                        <input type="text" id="medications" th:field="*{medications}" placeholder="Enter the medications"  />
+                    </td>
+                </tr>
+
+                <!-- Treatments -->
+                <tr>
+                    <td><label for="treatments">Treatments:</label></td>
+                    <td>
+                        <input type="text" id="treatments" th:field="*{treatments}" placeholder="Enter treatments"  />
+                    </td>
+                </tr>
+
+                <!-- medicalHistory -->
+                <tr>
+                    <td><label for="medicalHistory">Medical History:</label></td>
+                    <td>
+                        <input type="text" id="medicalHistory" th:field="*{medicalHistory}" placeholder="Enter medical record"  />
+                    </td>
+                </tr>
+
+                <!-- Submit Button -->
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Register" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!-- Buttons to View All Employees and Search Employee by Name -->
+        <!-- <div class="button-container">
+            <button onclick="window.location.href='/viewAllEmployees'">View All Employees</button>
+            <button onclick="window.location.href='/view'">Search Employee Name</button>
+        </div> -->
+    </div>
+</body>
+
+</html>
