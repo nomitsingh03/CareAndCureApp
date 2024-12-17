@@ -56,6 +56,13 @@
 			margin: 10px 0;
 		}
 
+		.button-container {
+
+			display: flex;
+			justify-content: space-between;
+			margin: 15px 0;
+		}
+
 		/* Button to Encourage Next Steps */
 		.next-button {
 			margin-top: 20px;
@@ -72,6 +79,7 @@
 		.next-button:hover {
 			background-color: rgb(0, 128, 255);
 		}
+
 
 		/* Responsive Design */
 		@media (max-width: 768px) {
@@ -112,7 +120,10 @@
 		</div>
 
 		<!-- Optional Next Steps -->
-		<button class="next-button" onclick="window.location.href='/patientRegistration'">Go to Registration Page</button>
+		<div class="button-container">
+			<button class="next-button" onclick="window.location.href='/patientRegistration'">Registration Page</button>
+			<button class="next-button" onclick="window.location.href='/'">Home Page</button>
+		</div>
 	</div>
 </body>
 

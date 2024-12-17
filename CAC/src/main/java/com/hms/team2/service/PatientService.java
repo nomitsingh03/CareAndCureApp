@@ -44,7 +44,18 @@ public class PatientService {
 	public Patient updatePatient(int id, Patient patient) {
 		Patient oldDetail = patientRepository.findById(id).orElse(null);
 		if(oldDetail==null) return null;
-		return patientRepository.save(patient);
+		oldDetail.setPatientName(patient.getPatientName());;
+		oldDetail.setEmailId(patient.getEmailId());
+		oldDetail.setAllergies(patient.getAllergies());
+		oldDetail.setContactNumber(patient.getContactNumber());
+		oldDetail.setMedicalHistory(patient.getMedicalHistory());
+		oldDetail.setTreatments(patient.getTreatments());
+		oldDetail.setMedications(patient.getMedications());
+		oldDetail.setAddress(patient.getAddress());
+		oldDetail.setDateOfBirth(oldDetail.getDateOfBirth());
+//		oldDetail.setAge(Period.between(oldDetail.getDateOfBirth(), LocalDate.now()).getYears());
+		oldDetail.setAge(patient.getAge());
+		return patientRepository.save(oldDetail);
 	}
 
 	public Patient changeActive(int id) {

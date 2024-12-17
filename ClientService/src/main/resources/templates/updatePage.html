@@ -32,8 +32,7 @@
         .form-container {
             width: 100%;
             max-width: 500px;
-            margin-top: 5%;
-            margin-bottom: 5%;
+            margin-top: 2%;
             padding: 20px;
             background-color: #fff;
             border-radius: 10px;
@@ -93,19 +92,19 @@
             border: none;
             border-radius: 5px;
             color: white;
-            background-color: rgb(0, 128, 192);
+            background-color: rgb(16, 141, 22);
             cursor: pointer;
             transition: background-color 0.3s ease-in-out;
         }
 
         input[type="submit"]:hover {
-            background-color: rgb(0, 128, 255);
+            background-color: rgb(7, 79, 23);
         }
 
         /* Buttons for View and Search */
         .button-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             margin: 15px 0;
         }
 
@@ -123,6 +122,7 @@
         .button-container button:hover {
             background-color: #0056b3;
         }
+
         .next-button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -146,28 +146,42 @@
             text-align: center;
             margin-bottom: 15px;
         }
+
+        .success-message {
+            color: rgb(9, 168, 51);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 
 <body>
     <div class="form-container">
-        <h2>Patient Registration Form</h2>
+        <h2>Update Patient</h2>
 
         <!-- Display Error Message Example -->
         <div class="error-message" th:if="${error}">
             <p th:text="${error}"></p>
         </div>
 
+        <div class="error-message" th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <div class="success-message" th:if="${succMessage}">
+            <p th:text="${succMessage}"></p>
+        </div>
+
         <!-- Employee Registration Form -->
-        <form th:action="@{/registerPatient}" th:object="${patient}" method="post">
+        <form th:action="@{/updatePatient}" th:object="${patient}" method="post">
             <table>
                 <!-- Patient ID -->
-                <!--	<tr>
-					<td><label for="id">Patient ID:</label></td>
-					<td>
-						<input type="text" id="id" th:field="*{id}" placeholder="Enter Patient ID" required />
-					</td>
-				</tr> -->
+                <tr>
+                    <td><label for="id">Patient ID:</label></td>
+                    <td>
+                        <input type="text" id="id" th:field="*{patientId}" readonly />
+                    </td>
+                </tr>
                 <!-- Patient Name -->
                 <tr>
                     <td><label for="patientName">Employee Name:</label></td>
@@ -203,25 +217,14 @@
                         <input type="number" id="age" th:field="*{age}" placeholder="Enter the age" required />
                     </td>
                 </tr>
-                <!--Gender-->
-                <tr>
-                    <td><label>Gender:</label></td>
-                    <td>
-                        <input type="radio" id="male" name="gender" value="Male" th:field="*{gender}" />
-                        <label for="male">Male</label>
-                        <input type="radio" id="female" name="gender" value="Female" th:field="*{gender}" />
-                        <label for="female">Female</label>
 
-                    </td>
-                </tr>
-
-                <!--DOB-->
-                <tr>
+                <!-- DOB -->
+                <!-- <tr>
                     <td><label for="dob">Date of Birth: </label> </td>
                     <td>
-                        <input type="date" id="dob" th:field="*{dateOfBirth}" placeholder="Date " />
+                        <input type="date" id="dob" th:field="*{dateOfBirth}" disabled/>
                     </td>
-                </tr>
+                </tr> -->
 
                 <!-- Address -->
                 <tr>
@@ -268,7 +271,7 @@
                 <!-- Submit Button -->
                 <tr>
                     <td colspan="2">
-                        <input type="submit" value="Register" />
+                        <input type="submit" value="Update" />
                     </td>
                 </tr>
             </table>
@@ -276,7 +279,7 @@
 
         <!-- Buttons to View All Employees and Search Employee by Name -->
         <div class="button-container">
-            <!-- <button onclick="window.location.href='/viewAllEmployees'">View All Employees</button> -->
+            <button class="next-button" onclick="window.location.href='/searchPatient'">Go toSearch Page</button>
             <button class="next-button" onclick="window.location.href='/'">Go to Home Page</button>
         </div>
     </div>

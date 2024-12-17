@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee List</title>
+    <style>
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General Body Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* Header Styling */
+        h2 {
+            text-align: center;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        /* Table Container */
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+            /* Center-aligning text in table cells */
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        th {
+            background-color: #4c4caf;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+
+            th,
+            td {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 18px;
+            }
+
+            table th,
+            table td {
+                font-size: 12px;
+            }
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .button-container button{
+            padding: 10px 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        .next-button{
+            padding: 8px 12px;
+            font-size: 12px;
+            background-color: #078117;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+        .next-button :hover{
+            background-color: #1bae2e;
+        }
+
+        /* Error Message Style */
+        .error-message {
+            color: red;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: rgb(9, 168, 51);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Title -->
+    <h2>Patient List</h2>
+    <div class="container" style="text-align: center;">
+        <p th:if="${errorMessage}" class="error-message large-text" th:text="${errorMessage}"></p>
+        <p th:if="${successMessage}" class="success-message large-text" th:text="${successMessage}"></p>
+
+    </div>
+
+    <!-- Employee List Table with Responsive & Aesthetic Styling -->
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient ID</th>
+                    <th>Patient Name</th>
+                    <th>Email ID</th>
+                    <th>Age</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Thymeleaf Dynamic Table Rows -->
+                <tr th:each="patient : ${patientList}">
+                    <td th:text="${patient.patientId}"></td>
+                    <td th:text="${patient.patientName}"></td>
+                    <td th:text="${patient.emailId}"></td>
+                    <td th:text="${patient.age}"></td>
+                    <td>
+                        <!-- <button class="next-button" th:onclick="window.location.href='/indPatientById?patientId=2'+${patient.patientId}" >Update</button>
+                        <button class="next-button" th:onclick="window.location.href='/deletePatient/' + ${patient.patientId} + '\'" >Delete</button> -->
+                        <a th:href="@{'/findPatientById?patientId='+${patient.patientId}}"
+                            class="next-button">Update</a>
+                        <a th:href="@{'/deactivatePatient?patientId='+${patient.patientId}}"
+                            class="next-button">DeActivate</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+    <div class="button-container">
+        <!-- <button onclick="window.location.href='/viewAllEmployees'">View All Employees</button> -->
+        <button onclick="window.location.href='/'">Go to Home Page</button>
+    </div>
+
+</body>
+
+</html>
