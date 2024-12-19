@@ -44,6 +44,7 @@ public class PatientService {
 	public Patient updatePatient(int id, Patient patient) {
 		Patient oldDetail = patientRepository.findById(id).orElse(null);
 		if(oldDetail==null) return null;
+
 		oldDetail.setPatientName(patient.getPatientName());;
 		oldDetail.setEmailId(patient.getEmailId());
 		oldDetail.setAllergies(patient.getAllergies());

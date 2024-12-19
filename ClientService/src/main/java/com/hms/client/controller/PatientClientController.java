@@ -14,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,10 +60,9 @@ public class PatientClientController {
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
 		
 		try {
-			ResponseEntity<Patient> response= restTemplate.exchange(reuestUrl, HttpMethod.POST, requestEntity, Patient.class);
+			ResponseEntity<Patient> response = restTemplate.exchange(reuestUrl, HttpMethod.POST, requestEntity, Patient.class);
 			patientObj = response.getBody();
 		} catch(HttpClientErrorException e) {
-			
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
 			String errorMessage = rootNode.path("message").asText();
@@ -193,7 +191,6 @@ System.out.println(patient);
 	    } else {
 	        model.addAttribute("errorMessage", "Some Internal Error occur .Try agin later!");
 	        return "patientList";
-		
 	}
 }
 
@@ -225,7 +222,4 @@ System.out.println(patient);
 	        return "patientList";
 	    }
 	}
-	
-
-
 }

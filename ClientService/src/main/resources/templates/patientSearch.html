@@ -52,7 +52,8 @@
         }
 
         input[type="text"],
-        input[type="number"] {
+        input[type="number"]
+         {
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
@@ -62,6 +63,19 @@
 
         input[type="text"]:focus,
         input[type="number"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        #searchBy{
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        #searchBy:focus{
             border-color: #4CAF50;
             outline: none;
         }
@@ -119,22 +133,57 @@
         <p class="error-message large-text" th:text="${errorMessage}"></p>
     </div>
     </div>
-    <div class="form-container">
+    <div class="form-container" style="text-align: center;">
+        <!-- Selection Dropdown -->
+        <label for="searchBy">Search Patient By:</label>
+        <select id="searchBy" onchange="toggleSearchForms()">
+            <option value="" disabled selected>--Select an Option--</option>
+            <option value="name">Name</option>
+            <option value="id">ID</option>
+        </select>
+    </div>
+    
+    <br />
+
+    <!-- Form for searching by Name -->
+    <div id="searchByNameForm" class="form-container" style="display: none;">
         <form th:action="@{/findPatientByName}" th:method="get">
             <label for="name">Search By Patient Name:</label>
             <input type="text" id="name" name="name" placeholder="Type name to search..." required>
             <button type="submit">Search</button>
         </form>
     </div>
+    
     <br />
-    <br />
-    <div class="form-container">
+
+    <!-- Form for searching by ID -->
+    <div id="searchByIdForm" class="form-container" style="display: none;">
         <form th:action="@{/findPatientById}" th:method="get">
-            <label for="id">Update Details By Patient Id:</label>
-            <input type="number" id="id" name="patientId" placeholder="Type patient Id" required>
+            <label for="id">Update Details By Patient ID:</label>
+            <input type="number" id="id" name="patientId" placeholder="Type patient ID" required>
             <button type="submit">Search</button>
         </form>
     </div>
+
+    <script>
+        // Function to toggle forms based on the selected option
+        function toggleSearchForms() {
+            const searchBy = document.getElementById("searchBy").value;
+            const nameForm = document.getElementById("searchByNameForm");
+            const idForm = document.getElementById("searchByIdForm");
+            
+            if (searchBy === "name") {
+                nameForm.style.display = "block";
+                idForm.style.display = "none";
+            } else if (searchBy === "id") {
+                nameForm.style.display = "none";
+                idForm.style.display = "block";
+            } else {
+                nameForm.style.display = "none";
+                idForm.style.display = "none";
+            }
+        }
+    </script>
 </body>
 
 </html>
