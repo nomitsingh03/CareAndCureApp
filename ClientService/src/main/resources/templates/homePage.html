@@ -2,109 +2,148 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Registration Status</title>
-	<style>
-		/* General Reset */
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Module Home</title>
+    <style>
+        /* Reset and Base Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-		/* General Body Styling */
-		body {
-			font-family: 'Arial', sans-serif;
-			background-color: rgb(64, 128, 128);
-			color: #333;
-			line-height: 1.6;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100vh;
-			padding: 10px;
-		}
+        /* Background Styling with Gradient */
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(120deg, #69b3f4, #66f0f7);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-		/* Main Container */
-		.container {
-			max-width: 500px;
-			background-color: rgb(255, 255, 255);
-			border-radius: 8px;
-			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-			padding: 20px;
-			text-align: center;
-			border: 1px solid #ddd;
-		}
+        /* Container for Home Page Content */
+        .container {
+            width: 600px;
+            padding: 30px;
+            border-radius: 15px;
+            background: linear-gradient(
+                    rgba(0, 0, 0, 0.6),
+                    rgba(0, 0, 0, 0.6)
+                ),
+                url("https://img.freepik.com/free-photo/top-view-medical-examination-report-cellphone-medical-equipments-wooden-desk_1387-543.jpg");
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
 
-		/* Heading */
-		h1 {
-			margin-bottom: 20px;
-			color: #555;
-		}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
+        /* Welcome Heading */
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #fff;
+            font-weight: bold;
+        }
 
-		/* Button to Encourage Next Steps */
-		.next-button {
-			margin-top: 20px;
-			padding: 10px 20px;
-			font-size: 16px;
-			background-color: rgb(0, 128, 192);
-			border: none;
-			color: #fff;
-			border-radius: 5px;
-			cursor: pointer;
-			transition: background-color 0.3s ease;
-		}
+        /* Subtitle */
+        p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #f0f0f0;
+        }
 
-		.next-button:hover {
-			background-color: rgb(0, 128, 255);
-		}
+        /* Buttons Section */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
 
-		/* Responsive Design */
-		@media (max-width: 768px) {
-			.container {
-				padding: 15px;
-			}
+        li {
+            margin-bottom: 15px;
+        }
 
-			h1 {
-				font-size: 20px;
-			}
+        /* Buttons Styling */
+        .next-button {
+            display: inline-block;
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #69b3f4, #66f0f7);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
 
-			.error-message,
-			.success-message {
-				font-size: 14px;
-			}
-		}
+        .next-button:hover {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
 
-		@media (max-width: 480px) {
-			h1 {
-				font-size: 18px;
-			}
-		}
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 20px;
+            }
 
-		ul {
+            h1 {
+                font-size: 26px;
+            }
 
-			list-style: none;
-		}
-	</style>
+            p {
+                font-size: 16px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-	<div class="container">
-		<!-- Page Title -->
-		<h1>Welcome to Patient Module</h1>
+    <div class="container">
+        <!-- Welcome Message -->
+        <h1>Welcome to the Patient Module</h1>
+        <p>Manage patients efficiently with our easy-to-use system.</p>
 
-		<ul>
-			<!-- Optional Next Steps -->
-			<li><button class="next-button" onclick="window.location.href='/patientRegistration'">Registration
-					Page</button></li>
-			<li><button class="next-button" onclick="window.location.href='/viewAllPatient'">View All Patients</button>
-			</li>
-			<li><button class="next-button" onclick="window.location.href='/searchPatient'">Find Patient</button></li>
-
-		</ul>
-	</div>
+        <!-- Buttons for Navigation -->
+        <ul>
+            <li>
+                <button class="next-button" onclick="window.location.href='/patientRegistration'">
+                    Go to Registration Page
+                </button>
+            </li>
+            <li>
+                <button class="next-button" onclick="window.location.href='/viewAllPatient'">
+                    View All Patients
+                </button>
+            </li>
+            <li>
+                <button class="next-button" onclick="window.location.href='/updatePatient'">
+                    Update Patient Details
+                </button>
+            </li>
+        </ul>
+    </div>
 </body>
 
 </html>
