@@ -214,8 +214,8 @@
                     <td th:text="${patient.emailId}"></td>
                     <td th:text="${patient.age}"></td>
                     <td>
-                        <a th:href="@{'/findPatientById?patientId='+${patient.patientId}}" class="next-button">Update</a>
-                        <a th:href="@{'/deactivatePatient?patientId='+${patient.patientId}}" class="next-button" >
+                        <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="next-button">Update</a>
+                        <a th:href="@{'/deactivatePatient?patientId='+${patient.patientId}}" class="next-button">
                             <th:block th:if="${patient.isActive}">Deactivate</th:block>
                             <th:block th:unless="${patient.isActive}">Activate</th:block>
                         </a>
@@ -227,7 +227,10 @@
 
     <!-- Navigation Button -->
     <div class="button-container">
-        <button onclick="window.location.href='/'">Go to Home Page</button>
+        <div th:if="${userRole=='admin'}">
+        <button onclick="window.location.href='/adminPage'">Home Page</button>
+        <button onclick="window.location.href='/searchPatient'">Search Page</button>
+        </div>
     </div>
 </body>
 

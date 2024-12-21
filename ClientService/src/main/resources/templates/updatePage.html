@@ -149,7 +149,7 @@
         }
 
         .next-button {
-            padding: 12px 20px;
+            padding: 8px 15px;
             font-size: 16px;
             font-weight: bold;
             background: linear-gradient(135deg, #4facfe, #00f2fe);
@@ -158,7 +158,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 48%;
+            width:fit-content;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
@@ -181,7 +181,7 @@
 
             .next-button {
                 font-size: 14px;
-                padding: 10px;
+                padding: 8px;
             }
         }
     </style>
@@ -290,7 +290,10 @@
         <!-- Navigation Buttons -->
         <div class="button-container">
             <button class="next-button" onclick="window.location.href='/searchPatient'">Go to Search Page</button>
-            <button class="next-button" onclick="window.location.href='/'">Go to Home Page</button>
+            <div th:if="${userRole=='admin'}">
+                <button class="next-button" onclick="window.location.href='/adminPage'">Admin Home</button></div>
+            <div th:if="${userRole=='patient'}">
+                <button class="next-button" onclick="window.location.href='/patientPage'">Patient Home</button></div>
         </div>
     </div>
 </body>

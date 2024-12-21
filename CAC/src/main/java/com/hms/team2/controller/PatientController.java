@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hms.team2.model.Patient;
@@ -47,7 +48,6 @@ public class PatientController {
 		return ResponseEntity.ok(patient);
 	}
 	
-	
 	@GetMapping("/viewPatientByName/{name}")
 	public ResponseEntity<List<Patient>> getPatientById(@PathVariable String name){
 		List<Patient> patientList = patientService.getPatientsByName(name);
@@ -66,5 +66,23 @@ public class PatientController {
 		return new ResponseEntity<List<Patient>>(patientList, HttpStatus.OK);
 	}
 	
+	@PostMapping("/patientLogin")
+	public ResponseEntity<String> patientLogin(@RequestParam int username, @RequestParam String password) {
+		Patient patient = patientService.getPatientById(username);
+		if(patient==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found with given id : "+username);
+		if(patient.isActive()==false) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Patient is not active. Please contact Hospital");
+		if(patient.getPatientId()==username && patient.getPatientName().equals(password)) return ResponseEntity.ok("Patient Login Successfull");
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials. Please try again.");
+	}
+	
+	@PostMapping("/adminLogin")
+	public ResponseEntity<String> adminLogin(@RequestParam String username, @RequestParam String password) {
+		if ("admin".equals(username) && "admin123".equals(password)) {
+			System.out.println("heello");
+			return ResponseEntity.ok("Admin Login Successful");
+		} else {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials. Please try again.");
+		}
+	}
 
 }

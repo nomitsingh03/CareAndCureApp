@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"></html>>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .profile-container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile-details {
+            margin: 20px 0;
+        }
+        .profile-details div {
+            margin-bottom: 10px;
+        }
+        .button-container {
+            text-align: center;
+        }
+        .back-button{
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+.edit-button{
+    text-decoration: none;
+    padding: 10px 20px;
+            background-color: #ab2304;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+}
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <div class="profile-header">
+            <h1>Patient Profile</h1>
+        </div>
+        
+        <div class="profile-details">
+            <div><strong>Patient ID:</strong> [[${patient.patientId}]]</div>
+            <div><strong>Name:</strong> [[${patient.patientName}]]</div>
+            <div><strong>Age:</strong> [[${patient.age}]]</div>
+            <div><strong>Gender:</strong> [[${patient.gender}]]</div>
+            <div><strong>Email:</strong> [[${patient.emailId}]]</div>
+            <div><strong>Phone:</strong> [[${patient.contactNumber}]]</div>
+            <div><strong>Address:</strong> [[${patient.address}]]</div>
+            <div><strong>Status:</strong> [[${patient.isActive}]]</div>
+        </div>
+        
+        <div class="button-container">
+            <div th:if="${userRole=='admin'}">
+            <button class="back-button" onclick="window.location.href='/viewAllPatient'"></button>
+</div>
+<div th:if="${userRole=='patient'}">
+            <button class="back-button" onclick="window.location.href='/patientPage'">Back</button>
+</div>
+            <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="edit-button">Edit Profile</a>
+        </div>
+    </div>
+
+</body>
+</html>
