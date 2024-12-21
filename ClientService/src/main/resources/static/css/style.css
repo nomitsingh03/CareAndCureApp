@@ -1,0 +1,86 @@
+.button-container{
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+.button-container button {
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #58ecdb, #41f69c); /* Soft green tones */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.button-container button:hover {
+    background: linear-gradient(135deg, #87f9c0, #6ddccf); /* Hover effect */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Action Buttons */
+.next-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #fece2e, #fdeb95); /* Bright yellow tones */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.next-button:hover {
+    background: linear-gradient(135deg, #f3df7a, #fbce39); /* Hover effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    th,
+    td {
+        font-size: 14px;
+    }
+
+    .next-button {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+    .button-container button {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 22px;
+    }
+
+    th,
+    td {
+        font-size: 12px;
+    }
+}
+
+/* Error and Success Messages */
+.error-message {
+    color: #e74c3c;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.success-message {
+    color: #27dd73;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 15px;
+}

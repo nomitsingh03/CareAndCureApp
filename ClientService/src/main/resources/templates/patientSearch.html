@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
+<link th:href="@{/css/style.css}" rel="stylesheet">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Employee by Name</title>
+    <title>Find Patient by Name</title>
     <style>
         /* Base Reset */
         * {
@@ -163,6 +163,11 @@
             <input type="number" id="id" name="patientId" placeholder="Type patient ID" required>
             <button type="submit">Search</button>
         </form>
+    </div>
+
+    <!-- Navigation Button -->
+    <div class="button-container">
+        <button onclick="window.location.href='/'">Go to Home Page</button>
     </div>
 
     <script>

@@ -73,6 +73,8 @@ public class PatientClientController {
 		{
 			model.addAttribute("errorMessage", "Server Issue.Try Again!!!");
 		}
+		model.addAttribute("patientId", patientObj.getPatientId());
+		model.addAttribute("patientName", patientObj.getPatientName());
 		return "statuspage";
 		
 	}
@@ -169,29 +171,17 @@ System.out.println(patient);
 	public String deactivatePAtient(@RequestParam("patientId") int patientId, Model model) {
 		Patient patient=null;
 	    String url = "http://localhost:8084/deactivatePatient/" + patientId;
-	    HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/json");
+	    HttpEntity<Patient> requestEntity = new HttpEntity<>(patient,headers);
 	    try {
-	        ResponseEntity<Patient> response = restTemplate.exchange(
-	                url,
-	                HttpMethod.GET,
-	                null,
-	                Patient.class
-	        );
+	        ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Patient.class);
 	        patient = response.getBody();
+			return getAllPatient(model);
 	    } catch (HttpClientErrorException | HttpServerErrorException e) {
 	        model.addAttribute("errorMessage", "Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
 	        return "patientList";
-		}
-	    if (patient!=null) {
-	        model.addAttribute("successMessage", "Patient with Id : "+ patientId + " is deactivated.");
-
-	        return "patientList";
-	    } else {
-	        model.addAttribute("errorMessage", "Some Internal Error occur .Try agin later!");
-	        return "patientList";
-	}
+		}   
 }
 
 @RequestMapping(value = "/viewAllPatient", method = RequestMethod.GET)

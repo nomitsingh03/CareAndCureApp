@@ -34,7 +34,7 @@ public class Patient {
 	private String allergies;
 	private String medications;
 	private String treatments;
-	private boolean isActive = true;
+	private boolean isActive;
 	
 	public int getPatientId() {
 		return patientId;

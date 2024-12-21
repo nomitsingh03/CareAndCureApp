@@ -215,7 +215,10 @@
                     <td th:text="${patient.age}"></td>
                     <td>
                         <a th:href="@{'/findPatientById?patientId='+${patient.patientId}}" class="next-button">Update</a>
-                        <a th:href="@{'/deactivatePatient?patientId='+${patient.patientId}}" class="next-button">Deactivate</a>
+                        <a th:href="@{'/deactivatePatient?patientId='+${patient.patientId}}" class="next-button" >
+                            <th:block th:if="${patient.isActive}">Deactivate</th:block>
+                            <th:block th:unless="${patient.isActive}">Activate</th:block>
+                        </a>
                     </td>
                 </tr>
             </tbody>

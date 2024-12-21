@@ -15,6 +15,7 @@ public class PatientService {
 	public PatientRepository patientRepository;
 	
 	public Patient createPatient(Patient patient) {
+		patient.setActive(true);
 		return patientRepository.save(patient);
 	}
 	
@@ -45,7 +46,7 @@ public class PatientService {
 		Patient oldDetail = patientRepository.findById(id).orElse(null);
 		if(oldDetail==null) return null;
 
-		oldDetail.setPatientName(patient.getPatientName());;
+		oldDetail.setPatientName(patient.getPatientName());
 		oldDetail.setEmailId(patient.getEmailId());
 		oldDetail.setAllergies(patient.getAllergies());
 		oldDetail.setContactNumber(patient.getContactNumber());
@@ -62,8 +63,10 @@ public class PatientService {
 	public Patient changeActive(int id) {
 		// TODO Auto-generated method stub
 		Patient patient = patientRepository.findById(id).orElse(null);
+		System.out.println(patient.isActive());
 		if(patient==null) return null;
-		patient.setActive(false);
+		patient.setActive(!patient.isActive());
+		System.out.println(patient.isActive());
 		return patientRepository.save(patient);
 	}
 
