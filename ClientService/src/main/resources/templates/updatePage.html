@@ -289,8 +289,8 @@
 
         <!-- Navigation Buttons -->
         <div class="button-container">
-            <button class="next-button" onclick="window.location.href='/searchPatient'">Go to Search Page</button>
             <div th:if="${userRole=='admin'}">
+                <button class="next-button" onclick="window.location.href='/searchPatient'">Go to Search Page</button>
                 <button class="next-button" onclick="window.location.href='/adminPage'">Admin Home</button></div>
             <div th:if="${userRole=='patient'}">
                 <button class="next-button" onclick="window.location.href='/patientPage'">Patient Home</button></div>

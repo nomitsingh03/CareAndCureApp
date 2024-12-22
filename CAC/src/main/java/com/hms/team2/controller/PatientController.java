@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hms.team2.model.Admin;
 import com.hms.team2.model.Patient;
 import com.hms.team2.service.PatientService;
 
@@ -75,14 +76,6 @@ public class PatientController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials. Please try again.");
 	}
 	
-	@PostMapping("/adminLogin")
-	public ResponseEntity<String> adminLogin(@RequestParam String username, @RequestParam String password) {
-		if ("admin".equals(username) && "admin123".equals(password)) {
-			System.out.println("heello");
-			return ResponseEntity.ok("Admin Login Successful");
-		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials. Please try again.");
-		}
-	}
+	
 
 }

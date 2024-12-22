@@ -147,8 +147,12 @@
     <div class="container">
         <!-- Welcome Message -->
         <h1>Welcome Admin Page</h1>
-
         <ul>
+            <li>
+                <a class="next-button" th:href="@{'/viewAdminProfile?username='+${username}}">
+                   View Profile
+                </a>
+            </li>
             <li>
                 <button class="next-button" onclick="window.location.href='/patientRegistration'">
                    Register Patient

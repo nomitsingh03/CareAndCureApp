@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Profile</title>
+    <title>Admin Profile</title>
     <style>
         /* Base Reset */
         * {
@@ -132,37 +132,23 @@
     </style>
 </head>
 <body>
-
     <div class="profile-container">
+        
+        <!-- Profile Header -->
         <div class="profile-header">
-            <h1>Patient Profile</h1>
+            <h1>Admin Profile</h1>
         </div>
-        
-        <div class="profile-details">
-            <div><strong>Patient ID:</strong> [[${patient.patientId}]]</div>
-            <div><strong>Name:</strong> [[${patient.patientName}]]</div>
-            <div><strong>Age:</strong> [[${patient.age}]]</div>
-            <div><strong>Gender:</strong> [[${patient.gender}]]</div>
-            <div><strong>Email:</strong> [[${patient.emailId}]]</div>
-            <div><strong>Phone:</strong> [[${patient.contactNumber}]]</div>
-            <div><strong>Address:</strong> [[${patient.address}]]</div>
-            <div>
-                <strong>Status:</strong> 
-                <span th:text="${patient.isActive ? 'Active' : 'Not Active'}"></span>
-            </div>
-            
-        </div>
-        
+        <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+       
+         <!-- Profile Details -->
+        <div class="profile-details">    
+            <div><strong>Name:</strong> [[${admin.adminName}]]</div>
+            <div><strong>Username:</strong> [[${admin.username}]]</div>
+            <div><strong>Email:</strong> [[${admin.emailId}]]</div>
+        </div>   
         <div class="button-container">
-            <div th:if="${userRole=='admin'}">
-            <button class="back-button" onclick="window.location.href='/viewAllPatient'"></button>
-</div>
-<div th:if="${userRole=='patient'}">
-            <button class="back-button" onclick="window.location.href='/patientPage'">Back</button>
-</div>
-            <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="edit-button">Edit Profile</a>
+            <button class="back-button" onclick="window.location.href='/adminPage'">Back</button>
         </div>
     </div>
-
 </body>
 </html>

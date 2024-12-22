@@ -115,17 +115,36 @@
 			<!-- Error Message -->
 			<p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
 
-			<!-- Success Message -->
-			<p th:unless="${errorMessage}"  class="success-message" th:text="'Patient Registered Successfully'"><div style="text-align: center;">
+			<!-- Patient Success Message -->
+			<div th:if="${patient}"  style="text-align: center;">
+				<p class="success-message" th:text="'Patient Registered Successfully'">
+				</p>
 				<strong>Patient Name : [[${patientName}]]</strong>
+				<br>
 				<strong>Patient Id : [[${patientId}]]</strong>
-			</div></p>
+			</div>
+
+			<!--Admin Success Message -->
+			<div th:if="${admin}" style="text-align: center;">
+				<p  class="success-message" th:text="'Admin Registered Successfully'">
+				</p>
+				<strong>Admin Username : [[${username}]]</strong>
+				<br>
+				<strong>Password: [[${password}]]</strong>
+			</div>
 		</div>
 
 		<!-- Optional Next Steps -->
 		<div class="button-container">
-			<button class="next-button" onclick="window.location.href='/patientRegistration'">Registration Page</button>
-			<button class="next-button" onclick="window.location.href='/'">Home Page</button>
+			<button class="next-button" th:if="${userRole == 'admin'}" th:onclick="|window.location.href='/adminPage'|">
+				Home Page
+			</button>
+			
+			<button class="next-button" 
+        th:if="${userRole != 'admin'}"
+        th:onclick="|window.location.href='/'|">
+     Home Page
+</button>
 		</div>
 	</div>
 </body>
