@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link th:href="@{/css/style.css}" rel="stylesheet">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Patient by Name</title>
+    <title>Home Page</title>
     <style>
         /* Base Reset */
         * {
@@ -16,118 +16,147 @@
         /* General Body Styling */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f3f4f6;
+            background: linear-gradient(135deg, #85d7f4, #d4eff7);
             color: #333;
-            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             padding: 20px;
         }
 
         /* Header Styling */
         h1 {
-            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
             margin-bottom: 20px;
-            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Form Container Styling */
+        /* Form Container */
         .form-container {
+            width: 100%;
             max-width: 500px;
-            margin: 0 auto;
             padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.6s ease-in-out;
+            text-align: center;
         }
 
-        /* Form Styling */
-        form {
-            display: flex;
-            flex-direction: column;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        label {
-            margin: 10px 0 5px;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="password"],
-        #selectLogin
-         {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        input[type="password"]:focus,
-        #selectLogin:focus {
-            border-color: #4CAF50;
-            outline: none;
-        }
-
+        /* Buttons */
         button {
             margin-top: 15px;
-            padding: 10px;
+            padding: 12px 20px;
             font-size: 16px;
+            font-weight: bold;
             color: white;
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #43aa8b, #a4efc9);
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         button:hover {
-            background-color: #45a049;
+            background: linear-gradient(135deg, #a4efc9, #43aa8b);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Input Fields and Dropdown */
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        #selectLogin {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            background: #f9f9f9;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus,
+        #selectLogin:focus {
+            border-color: #3498db;
+            background: #ffffff;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: bold;
+            color: #34495e;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        /* Error Message */
+        .error-message {
+            color: #e74c3c;
+            font-size: 16px;
+            margin-bottom: 15px;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
+            h1 {
+                font-size: 24px;
             }
 
-            h1 {
-                font-size: 20px;
+            button {
+                font-size: 14px;
             }
 
             input[type="text"],
-            button[type="submit"] {
+            input[type="number"],
+            input[type="password"],
+            #selectLogin {
                 font-size: 14px;
             }
         }
-
-        /* Error Message Styling */
-      .error-message {
-        color: #e74c3c;
-        font-size: 14px;
-        text-align: center;
-        margin-bottom: 20px;
-      }
     </style>
 </head>
 
 <body>
+    <!-- Page Title -->
     <h1>Home Page</h1>
-    <div th:if="${errorMessage}" class="container" style="text-align: center;">
-        <p class="error-message large-text" th:text="${errorMessage}"></p>
+
+    <!-- Display Error Message -->
+    <div th:if="${errorMessage}" class="container">
+        <p class="error-message" th:text="${errorMessage}"></p>
     </div>
-    </div>
+
+    <!-- Patient Registration Button -->
     <div class="form-container">
-        <button class="" onclick="window.location.href='/patientRegistration'">
+        <button onclick="window.location.href='/patientRegistration'">
             Register Patient
         </button>
     </div>
-    <br>
-    <br>
-    <div class="form-container" style="text-align: center;">
-        <!-- Selection Dropdown -->
+
+    <!-- Selection Dropdown -->
+    <div class="form-container">
         <label for="selectLogin">Login As:</label>
         <select id="selectLogin" onchange="toggleSearchForms()">
             <option value="" disabled selected>--Select an Option--</option>
@@ -135,45 +164,36 @@
             <option value="patient">Patient</option>
         </select>
     </div>
-    
-    <br />
 
-    <!-- Form for Admin Login -->
+    <!-- Admin Login Form -->
     <div id="adminForm" class="form-container" style="display: none;">
         <form th:action="@{/adminLogin}" th:method="post">
-            <label for="username">Username :</label>
-            <input type="text" id="username" name="username" placeholder="Enter here...." required>
-            <br>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter here..." required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter here...." required>
-            <br>
+            <input type="password" id="password" name="password" placeholder="Enter here..." required>
             <button type="submit">Login</button>
         </form>
     </div>
-    
-    <br />
 
-    <!-- Form for Patient Login -->
+    <!-- Patient Login Form -->
     <div id="patientForm" class="form-container" style="display: none;">
         <form th:action="@{/patientLogin}" th:method="post">
-            <label for="username">Username :</label>
-            <input type="number" id="username" name="username" placeholder="Enter patient ID here...." required>
-            <br>
+            <label for="username">Patient ID:</label>
+            <input type="number" id="username" name="username" placeholder="Enter patient ID here..." required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your name here." required>
-            <br>
+            <input type="password" id="password" name="password" placeholder="Enter your name here..." required>
             <button type="submit">Login</button>
         </form>
     </div>
 
-
+    <!-- JavaScript for Toggling Forms -->
     <script>
-        // Function to toggle forms based on the selected option
         function toggleSearchForms() {
             const searchBy = document.getElementById("selectLogin").value;
             const adminForm = document.getElementById("adminForm");
             const patientForm = document.getElementById("patientForm");
-            
+
             if (searchBy === "admin") {
                 adminForm.style.display = "block";
                 patientForm.style.display = "none";
