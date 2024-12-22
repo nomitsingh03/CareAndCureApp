@@ -145,13 +145,7 @@ public class AdminCleintController {
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session, RedirectAttributes redirectAttributes) {
-		String requestUrl = "http://localhost:8084/adminLogin?username=" + username + "&password=" + password; // URL
-																												// for
-																												// the
-																												// admin
-																												// login
-																												// //
-																												// service
+		String requestUrl = "http://localhost:8084/adminLogin?username=" + username + "&password=" + password; 
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
@@ -173,14 +167,13 @@ public class AdminCleintController {
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			// Handle errors during login
 			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-				redirectAttributes.addAttribute("errorMessage",
-						"Invalid credentials. Please check your username and password.");
+				session.setAttribute("errorMessage",
+					"Invalid credentials. Please check your username and password.");
 			} else {
-				redirectAttributes.addAttribute("errorMessage",
-						"An error occurred with the login request. Status: " + e.getStatusCode());
+				session.setAttribute("errorMessage",
+					"An error occurred with the login request. Status: " + e.getStatusCode());
 			}
 		}
-
 		return "redirect:/"; // Redirect back to the login page in case of failure
 	}
 
