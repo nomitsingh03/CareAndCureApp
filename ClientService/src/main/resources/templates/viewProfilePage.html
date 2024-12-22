@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"></html>>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -131,13 +132,16 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="profile-container">
+        <!-- Profile Header -->
         <div class="profile-header">
             <h1>Patient Profile</h1>
         </div>
-        
+
+        <!-- Profile Details -->
         <div class="profile-details">
             <div><strong>Patient ID:</strong> [[${patient.patientId}]]</div>
             <div><strong>Name:</strong> [[${patient.patientName}]]</div>
@@ -152,17 +156,19 @@
             </div>
             
         </div>
-        
+
+        <!-- Buttons -->
         <div class="button-container">
             <div th:if="${userRole=='admin'}">
-            <button class="back-button" onclick="window.location.href='/viewAllPatient'"></button>
-</div>
-<div th:if="${userRole=='patient'}">
-            <button class="back-button" onclick="window.location.href='/patientPage'">Back</button>
-</div>
+                <button class="back-button" onclick="window.location.href='/viewAllPatient'">Back to Patients</button>
+            </div>
+            <div th:if="${userRole=='patient'}">
+                <button class="back-button" onclick="window.location.href='/patientPage'">Back</button>
+            </div>
             <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="edit-button">Edit Profile</a>
         </div>
     </div>
 
 </body>
+
 </html>

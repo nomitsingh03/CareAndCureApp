@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link th:href="@{/css/style.css}" rel="stylesheet">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -140,11 +140,15 @@
 </head>
 
 <body>
+    <!-- Page Title -->
     <h1>Home Page</h1>
-    <div th:if="${errorMessage}" class="container" style="text-align: center;">
-        <p class="error-message large-text" th:text="${errorMessage}"></p>
+
+    <!-- Display Error Message -->
+    <div th:if="${errorMessage}" class="container">
+        <p class="error-message" th:text="${errorMessage}"></p>
     </div>
-    </div>
+
+    <!-- Patient Registration Button -->
     <div class="form-container">
 
         <!-- Patient Registration Button -->
@@ -157,6 +161,7 @@
             Register Admin
         </button>
     </div>
+
     <!-- Selection Dropdown -->
     <div class="form-container" style="text-align: center;">
         <label for="selectLogin">Login As:</label>
@@ -166,8 +171,6 @@
             <option value="patient">Patient</option>
         </select>
     </div>
-    
-    <br />
 
     <!-- Admin Login Form -->
     <div id="adminForm" class="form-container" style="display: none;">
@@ -179,16 +182,14 @@
             <button type="submit">Login</button>
         </form>
     </div>
-    
-    <br />
 
     <!-- Patient Login Form -->
     <div id="patientForm" class="form-container" style="display: none;">
         <form th:action="@{/patientLogin}" th:method="post">
-            <label for="username">Username :</label>
-            <input type="number" id="username" name="username" placeholder="Enter patient ID here...." required>
+            <label for="username">Patient ID:</label>
+            <input type="number" id="username" name="username" placeholder="Enter patient ID here..." required>
             <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your name here." required>
+            <input type="password" id="password" name="password" placeholder="Enter your name here..." required>
             <button type="submit">Login</button>
         </form>
     </div>
@@ -199,7 +200,7 @@
             const searchBy = document.getElementById("selectLogin").value;
             const adminForm = document.getElementById("adminForm");
             const patientForm = document.getElementById("patientForm");
-            
+
             if (searchBy === "admin") {
                 adminForm.style.display = "block";
                 patientForm.style.display = "none";

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<link th:href="@{/css/style.css}" rel="stylesheet">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Find Patient by Name</title>
+    <title>Find Patient</title>
     <style>
         /* Base Reset */
         * {
@@ -200,16 +200,17 @@
         <div th:if="${userRole}=='patient'">
             <button onclick="window.location.href='/patientPage'">Go to Home Page</button>
         </div>
-
     </div>
+   
 
+    <!-- JavaScript for Toggling Forms -->
     <script>
         // Function to toggle forms based on the selected option
         function toggleSearchForms() {
             const searchBy = document.getElementById("searchBy").value;
             const nameForm = document.getElementById("searchByNameForm");
             const idForm = document.getElementById("searchByIdForm");
-            
+
             if (searchBy === "name") {
                 nameForm.style.display = "block";
                 idForm.style.display = "none";
