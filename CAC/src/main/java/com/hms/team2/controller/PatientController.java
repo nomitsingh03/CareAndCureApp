@@ -17,6 +17,8 @@ import com.hms.team2.model.Admin;
 import com.hms.team2.model.Patient;
 import com.hms.team2.service.PatientService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class PatientController {
 	
@@ -24,7 +26,7 @@ public class PatientController {
 	private PatientService patientService;
 	
 	@PostMapping("/registerPatient") 
-	public ResponseEntity<Patient> registerPatient(@RequestBody Patient patient){
+	public ResponseEntity<Patient> registerPatient(@Valid @RequestBody Patient patient){
 		return new ResponseEntity<Patient>(patientService.createPatient(patient), HttpStatus.CREATED);
 	}
 	

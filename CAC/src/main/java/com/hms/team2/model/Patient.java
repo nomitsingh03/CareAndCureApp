@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Patient {
@@ -19,6 +20,7 @@ public class Patient {
 	private int patientId;
 	
 	@Column(nullable = false)
+	@NotBlank(message = "Patient Name is mandatory")
 	private String patientName;
 	private int age;
 	private LocalDate dateOfBirth;

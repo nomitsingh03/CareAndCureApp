@@ -147,9 +147,19 @@
 			<!-- Error Message -->
 			<p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
 
+			<!-- Field-specific validation errors -->
+			<div th:if="${validationErrors}" style="color: red;">
+				<h3>Validation Errors:</h3>
+				<ul>
+					<li th:each="entry : ${validationErrors}">
+						<span th:text="${entry.key}"></span>: <span th:text="${entry.value}"></span>
+					</li>
+				</ul>
+			</div>
+
 			<!-- Patient Success Message -->
-			<div th:if="${patient}" class="details-container">
-				<p class="success-message">Patient Registered Successfully</p>
+			<div th:if="${message}" class="details-container">
+				<p class="success-message">[[${message}]]</p>
 				<div>
 					<strong>Patient Name:</strong> [[${patientName}]]
 				</div>

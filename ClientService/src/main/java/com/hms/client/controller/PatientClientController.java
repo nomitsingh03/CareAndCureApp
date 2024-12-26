@@ -2,6 +2,7 @@ package com.hms.client.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -155,20 +158,30 @@ public class PatientClientController {
 			ResponseEntity<Patient> response = restTemplate.exchange(reuestUrl, HttpMethod.POST, requestEntity,
 					Patient.class);
 			patientObj = response.getBody();
-		} catch (HttpClientErrorException e) {
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
-			String errorMessage = rootNode.path("message").asText();
-			model.addAttribute("errorMessage", errorMessage);
+			model.addAttribute("patientId", patientObj.getPatientId());
+		model.addAttribute("patientName", patientObj.getPatientName());
+		model.addAttribute("message", "Registration Successfully.");
+		return "statuspage";
+		} catch (HttpStatusCodeException e) {
+			if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+				// Parse validation errors from the response body
+				ObjectMapper objectMapper = new ObjectMapper();
+				try {
+					Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+					model.addAttribute("validationErrors", errors);
+				} catch (Exception parseException) {
+					model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
+				}
+				return "registration";
+			} else {
+				model.addAttribute("errorMessage", "Unexpected error: " + e.getMessage());
+			}
+			return "statusPage";
+		} catch (Exception e) {
+			model.addAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
 			return "statusPage";
 		}
-		if (patientObj == null) {
-			model.addAttribute("errorMessage", "Server Issue.Try Again!!!");
-		}
-		model.addAttribute("patientId", patientObj.getPatientId());
-		model.addAttribute("patientName", patientObj.getPatientName());
-		model.addAttribute("patient", true);
-		return "statuspage";
+		
 
 	}
 
