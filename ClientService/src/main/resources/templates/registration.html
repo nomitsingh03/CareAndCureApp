@@ -199,6 +199,14 @@
       <p th:text="${error}"></p>
     </div>
 
+
+    <!-- Display validation errors (list) -->
+    <div th:if="${validationErrors!=null and validationErrors.containsKey('error')}">
+    
+          <p class="error-message" th:text="${validationErrors['error']}"></p>
+      
+  </div>
+
     <!-- Patient Registration Form -->
     <form  th:action="@{/registerPatient}" th:object="${patient}" method="post">
       <table>
@@ -219,6 +227,9 @@
           <td>
             <input type="email" id="emailId" th:field="*{emailId}" placeholder="Enter a valid email address" />
           </td>
+          <td class="error-message" th:if="${validationErrors != null and validationErrors.containsKey('emailId')}">
+            <p th:text="${validationErrors['emailId']}"></p>
+          </td>
         </tr>
 
         <!-- Contact Number -->
@@ -228,6 +239,9 @@
             <input type="number" id="contactNumber" th:field="*{contactNumber}" placeholder="Enter Contact Number"
               />
           </td>
+          <td class="error-message" th:if="${validationErrors != null and validationErrors.containsKey('contactNumber')}">
+            <p th:text="${validationErrors['contactNumber']}"></p>
+          </td>
         </tr>
 
         <!-- Age -->
@@ -235,6 +249,9 @@
           <td><label for="age">Age:</label></td>
           <td>
             <input type="number" id="age" th:field="*{age}" placeholder="Enter the Age"  />
+          </td>
+          <td class="error-message" th:if="${validationErrors != null and validationErrors.containsKey('age')}">
+            <p th:text="${validationErrors['age']}"></p>
           </td>
         </tr>
 
@@ -246,6 +263,9 @@
             <label for="male">Male</label>
             <input type="radio" id="female" name="gender" value="Female" th:field="*{gender}" />
             <label for="female">Female</label>
+          </td>
+          <td class="error-message" th:if="${validationErrors != null and validationErrors.containsKey('gender')}">
+            <p th:text="${validationErrors['gender']}"></p>
           </td>
         </tr>
 
@@ -262,6 +282,9 @@
           <td><label for="address">Address:</label></td>
           <td>
             <input type="text" id="address" th:field="*{address}" placeholder="Enter Address"  />
+          </td>
+          <td class="error-message" th:if="${validationErrors != null and validationErrors.containsKey('address')}">
+            <p th:text="${validationErrors['address']}"></p>
           </td>
         </tr>
 

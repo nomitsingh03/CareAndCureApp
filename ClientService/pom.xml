@@ -8,10 +8,10 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.hms</groupId>
-	<artifactId>cllient</artifactId>
+	<groupId>com.cac</groupId>
+	<artifactId>client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PatientModuleClient</name>
+	<name>ClientService</name>
 	<description>Hospital Management System Frontend</description>
 	<url/>
 	<licenses>

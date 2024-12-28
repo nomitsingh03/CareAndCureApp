@@ -8,10 +8,10 @@
 		<version>3.4.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.hms</groupId>
-	<artifactId>team2</artifactId>
+	<groupId>com.cac</groupId>
+	<artifactId>server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>PatientModule</name>
+	<name>CAC</name>
 	<description>Hospital Management System Backend</description>
 	<url/>
 	<licenses>

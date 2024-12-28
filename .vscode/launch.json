@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CAC",
+            "request": "launch",
+            "mainClass": "com.cac.CAC",
+            "projectName": "server"
+        },
+        {
+            "type": "java",
+            "name": "ClientService",
+            "request": "launch",
+            "mainClass": "com.cac.client.ClientService",
+            "projectName": "client"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-ClientService<cllient>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -17,6 +31,26 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.hms.team2.CAC",
             "projectName": "team2",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CAC<team2>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.cac.CAC",
+            "projectName": "team2",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ClientService<cllient>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.cac.client.ClientService",
+            "projectName": "cllient",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }
