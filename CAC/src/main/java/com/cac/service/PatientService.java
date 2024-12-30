@@ -63,11 +63,11 @@ public class PatientService {
 		return patientRepository.save(oldDetail);
 	}
 
-	public Patient changeActive(int id) {
+	public Patient changeActive(int id) throws PatientNotFound {
 		// TODO Auto-generated method stub
-		Patient patient = patientRepository.findById(id).orElse(null);
+		Patient patient = patientRepository.findById(id).orElseThrow(()->new PatientNotFound("Patient not found with Id: "+id));
 		System.out.println(patient.isActive());
-		if(patient==null) return null;
+		//if(patient==null) return null;
 		patient.setActive(!patient.isActive());
 		System.out.println(patient.isActive());
 		return patientRepository.save(patient);

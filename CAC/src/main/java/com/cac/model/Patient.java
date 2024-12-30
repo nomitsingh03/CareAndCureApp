@@ -34,13 +34,17 @@ public class Patient {
 
 	@NotBlank(message="Select gender")
 	private String gender;
-	
+
 	@NotBlank(message = "Contact Number is mandatory")
 	@Column(nullable = false)
-	@Size(min = 10, max = 10, message = "Contact number must be 10 digits")
+	@Pattern(
+			regexp = "^\\+[1-9]{1}[0-9]{1,3}[0-9]{10}$",
+			message = "Contact number must start with a country code (e.g., +1) followed by a 10-digit mobile number"
+	)
 	private String contactNumber;
 
-	@Email(message = "Enter valid email", regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+
+	@Email(message = "Enter valid email", regexp = "^[a-zA-Z0-9+_.-]+@gmail\\.com$")
 	@Column(unique = true)
 	private String emailId;
 	private String medicalHistory;

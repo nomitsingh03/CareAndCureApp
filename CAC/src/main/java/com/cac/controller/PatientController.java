@@ -40,7 +40,7 @@ public class PatientController {
 	}
 	
 	@PutMapping("/deactivatePatient/{id}")
-	public ResponseEntity<Patient> changePatientActive(@PathVariable int id){
+	public ResponseEntity<Patient> changePatientActive(@PathVariable int id) throws Exception{
 		return new ResponseEntity<Patient>(patientService.changeActive(id), HttpStatus.ACCEPTED);
 	}
 	
