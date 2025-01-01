@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cac.client.model.AdminDto;
+import com.cac.client.model.LoginDetails;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -99,11 +101,12 @@ public class AdminCleintController {
 	public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
 			throws JsonMappingException, JsonProcessingException {
 		AdminDto adminObj = null;
-		String requestUrl = "http://localhost:8084/adminRegister"; // URL for the admin registration service
+		String requestUrl = "http://localhost:8084/userRegister"; // URL for the admin registration service
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
 		// Create an HTTP entity with the admin data and headers
+		admin.setRole("admin");
 		HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
 
 		try {
@@ -138,43 +141,39 @@ public class AdminCleintController {
 	 * @param password           the password of the admin
 	 * @param model              the model to add attributes to for the view
 	 * @param session            the HTTP session to store user information
-	 * @param redirectAttributes used to pass attributes during a redirect
 	 * @return a redirect to the admin page if login is successful, or back to the
 	 *         login page with an error message
 	 */
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
-			HttpSession session, RedirectAttributes redirectAttributes) {
-		String requestUrl = "http://localhost:8084/adminLogin?username=" + username + "&password=" + password; 
+			HttpSession session) {
+		String requestUrl = "http://localhost:8084/login";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
-		// Create an HTTP entity with no body and the headers
-		HttpEntity<AdminDto> requestEntity = new HttpEntity<>(null, headers);
+		LoginDetails details = new LoginDetails(username, password, "admin");
+		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
+
 		try {
-			// Send a POST request to log in the admin and capture the response
-			ResponseEntity<AdminDto> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
-					AdminDto.class);
-			AdminDto admin = response.getBody(); // Get the logged-in admin object from the response
-			if (admin == null) {
-				model.addAttribute("errorMessage", "Server Issue. Try Again!!!");
-				return "statusPage"; // Return the status page with an error message
-			}
-			// Store user role and username in the session
+			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
+			String message = response.getBody();
+			session.setAttribute("message", message);
+			session.setAttribute("username", username);
 			session.setAttribute("userRole", "admin");
-			session.setAttribute("username", admin.getUsername());
-			return "redirect:/adminPage"; // Redirect to the admin page upon successful login
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			// Handle errors during login
-			if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-				session.setAttribute("errorMessage",
-					"Invalid credentials. Please check your username and password.");
-			} else {
-				session.setAttribute("errorMessage",
-					"An error occurred with the login request. Status: " + e.getStatusCode());
+			return "redirect:/adminPage"; // Admin-specific page
+
+		} catch (HttpStatusCodeException e) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				String errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
+				session.setAttribute("errorMessage", errorMessage);
+			} catch (Exception parseException) {
+				session.setAttribute("errorMessage", e.getMessage());
 			}
+		} catch (Exception e) {
+			session.setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
 		}
-		return "redirect:/"; // Redirect back to the login page in case of failure
+		return "redirect:/";  // Redirect back to the login page in case of failure
 	}
 
 	/**
@@ -187,8 +186,9 @@ public class AdminCleintController {
 	 */
 	@GetMapping("/viewAdminProfile")
 	public String viewProfile(@RequestParam String username, Model model) {
+		
 		AdminDto dto = null;
-		String url = "http://localhost:8084/viewAdmin/" + username;
+		String url = "http://localhost:8084/viewUserInfo/" + username;
 		try {
 			ResponseEntity<AdminDto> response = restTemplate.exchange(
 					url,
@@ -197,7 +197,8 @@ public class AdminCleintController {
 					AdminDto.class);
 			dto = response.getBody();
 			model.addAttribute("admin", dto);
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			
+		} catch (HttpStatusCodeException e) {
 			model.addAttribute("errorMessage", "Unable to fetch Admin details. Please try again later.");
 		}
 		return "viewAdminProfilePage";

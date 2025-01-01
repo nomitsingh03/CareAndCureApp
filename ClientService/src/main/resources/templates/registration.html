@@ -236,7 +236,7 @@
         <tr>
           <td><label for="contactNumber">Contact:</label></td>
           <td>
-            <input type="number" id="contactNumber" th:field="*{contactNumber}" placeholder="Enter Contact Number"
+            <input type="text" id="contactNumber" th:field="*{contactNumber}" placeholder="Enter Contact Number"
               />
           </td>
           <td class="error-message" th:if="${validationErrors != null and validationErrors.containsKey('contactNumber')}">

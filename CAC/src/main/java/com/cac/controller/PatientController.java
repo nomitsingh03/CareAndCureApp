@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cac.exception.UserNotFoundException;
 import com.cac.model.Patient;
 import com.cac.service.PatientService;
 
@@ -45,7 +45,7 @@ public class PatientController {
 	}
 	
 	@GetMapping("/viewPatient/{id}")
-	public ResponseEntity<Patient> getPatientById(@PathVariable int id){
+	public ResponseEntity<Patient> getPatientById(@PathVariable int id) throws UserNotFoundException{
 		Patient patient = patientService.getPatientById(id);
 		return ResponseEntity.ok(patient);
 	}
@@ -68,15 +68,12 @@ public class PatientController {
 		return new ResponseEntity<List<Patient>>(patientList, HttpStatus.OK);
 	}
 	
-	@PostMapping("/patientLogin")
-	public ResponseEntity<String> patientLogin(@RequestParam int username, @RequestParam String password) {
-		Patient patient = patientService.getPatientById(username);
-		if(patient==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found with given id : "+username);
-		if(patient.isActive()==false) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Patient is not active. Please contact Hospital");
-		if(patient.getPatientId()==username && patient.getPatientName().equals(password)) return ResponseEntity.ok("Patient Login Successfull");
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials. Please try again.");
-	}
-	
-	
-
+	// @PostMapping("/patientLogin")
+	// public ResponseEntity<String> patientLogin(@RequestParam int username, @RequestParam String password) throws Exception{
+	// 	Patient patient = patientService.getPatientById(username);
+	// 	if(patient==null) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Patient not found with given id : "+username);
+	// 	if(patient.isActive()==false) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Patient is not active. Please contact Hospital");
+	// 	if(patient.getPatientId()==username && patient.getPatientName().equals(password)) return ResponseEntity.ok("Patient Login Successfull");
+	// 	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials. Please try again.");
+	// }
 }

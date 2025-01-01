@@ -24,6 +24,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import com.cac.client.model.LoginDetails;
 import com.cac.client.model.Patient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -150,7 +151,6 @@ public class PatientClientController {
 		String reuestUrl = "http://localhost:8084/registerPatient";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
-
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
 
 		try {
@@ -208,18 +208,23 @@ public class PatientClientController {
 					new ParameterizedTypeReference<List<Patient>>() {
 					});
 			patientList = response.getBody();
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			model.addAttribute("errorMessage", "Unable to fetch Patient List. Please try again later.");
-			return "patientSearch";
-		}
+		} catch (HttpStatusCodeException e) {
+			ObjectMapper objectMapper = new ObjectMapper();
+				
+			String errorMessage;
+			try {
+				errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
+				model.addAttribute("errorMessage", errorMessage);
+			} catch (Exception parseException) {
+				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
+			}
 
+		}
 		if (patientList != null && patientList.size() != 0) {
 			model.addAttribute("patientList", patientList);
 			return "patientList";
-		} else {
-			model.addAttribute("errorMessage", "No Patient found with the given name." + name);
+		} 
 			return "patientSearch";
-		}
 	}
 
 	/**
@@ -241,20 +246,26 @@ public class PatientClientController {
 					null,
 					Patient.class);
 			patient = response.getBody();
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			model.addAttribute("errorMessage",
-					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
-			return "patientSearch";
+
+			if (patient != null) {
+				List<Patient> patientList = new ArrayList<>();
+				patientList.add(patient);
+				model.addAttribute("patientList", patientList);
+				return "patientList";
+			}
+
+		} catch (HttpStatusCodeException e) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				String errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
+				model.addAttribute("errorMessage", errorMessage);
+			} catch (Exception parseException) {
+				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
+			}
+		} catch(Exception e){
+			model.addAttribute("errorMessage", "Some Internal Error Occur ");
 		}
-		if (patient != null) {
-			List<Patient> patientList = new ArrayList<>();
-			patientList.add(patient);
-			model.addAttribute("patientList", patientList);
-			return "patientList";
-		} else {
-			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
-			return "patientSearch";
-		}
+		return "patientSearch";
 	}
 
 	/**
@@ -364,7 +375,7 @@ public class PatientClientController {
 			model.addAttribute("errorMessage", errorMessage);
 			model.addAttribute("patient", patient);
 			return "updatePage";
-		}
+		} 
 
 		model.addAttribute("patient", patientObj);
 		model.addAttribute("succMessage", " Patient updated Successfully!");
@@ -394,6 +405,10 @@ public class PatientClientController {
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Patient.class);
 			patient = response.getBody();
+			if(patient.isActive())
+			model.addAttribute("successMessage", "Patient with Id (" + patientId + ") activated successfully.");
+			else 
+			model.addAttribute("successMessage", "Patient with Id (" + patientId + ") deactivated successfully.");
 			return getAllPatient(model);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			model.addAttribute("errorMessage",
@@ -460,42 +475,38 @@ public class PatientClientController {
 	@PostMapping("/patientLogin")
 	public String patientLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
-		int patientId = 0;
 		if (username.isEmpty() || password.isEmpty()) {
 			model.addAttribute("errorMessage", "Please enter Patient Id and Password.");
 			return "homePage";
 		}
-		try {
-			patientId = Integer.parseInt(username);
-		} catch (NumberFormatException e) {
-			model.addAttribute("errorMessage", "Invalid patient Id / username. Please enter a valid Patient Id.");
-			return "homePage";
-		}
+		LoginDetails details = new LoginDetails(username, password, "patient");
 
-		String requestUrl = "http://localhost:8084/patientLogin?username=" + patientId + "&password=" + password;
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/json");
+
+		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
+
+		String requestUrl = "http://localhost:8084/login";
 
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, null, String.class);
+			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
 			String message = response.getBody();
-			System.out.println(patientId);
 			session.setAttribute("message", message);
-			session.setAttribute("patientId", patientId);
+			session.setAttribute("patientId", Integer.parseInt(username));
 			session.setAttribute("userRole", "patient");
 			return "redirect:/patientPage"; // Admin-specific page
 
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			if (e.getResponseBodyAsString().isEmpty()) {
-				if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-					session.setAttribute("errorMessage",
-							"Invalid credentials. Please check your username and password.");
-				} else {
-					session.setAttribute("errorMessage",
-							"An error occurred with the login request. Status: " + e.getStatusCode());
-				}
-			} else {
-				// In case there is a response body
-				session.setAttribute("errorMessage", "Error: " + e.getResponseBodyAsString());
+		} catch (HttpStatusCodeException e) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			try {
+				String errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
+				System.out.println(errorMessage);
+				session.setAttribute("errorMessage", errorMessage);
+			} catch (Exception parseException) {
+				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
+		} catch (Exception e) {
+			session.setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
 		}
 		return "redirect:/"; // Redirect back to the login page in case of failure
 	}
