@@ -38,7 +38,7 @@ public class UserService {
             return "Welcome Back, " + user.getName()+ "!";
         }
         if ("patient".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("PATIENT")) {
-            return "Welcome Back, " + user.getRole() + "!";
+            return "Welcome Back, " + user.getPassword() + "!";
         } else {
             throw new LoginFailedException("Invalid details. Try again!");
         }

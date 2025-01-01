@@ -116,9 +116,33 @@ public class PatientClientController {
 	 * @return the name of the patient page view, which is "patientPage"
 	 */
 	@GetMapping("/patientPage")
-	public String patientPage(Model model) {
+	public String patientPage(HttpSession session,Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
 		return "patientPage";
 	}
+	/*@GetMapping("/adminPage")
+	public String adminPage(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		return "adminPage";
+	} */
 
 	/**
 	 * Handles user logout requests.
