@@ -10,34 +10,38 @@ import com.cac.model.UserInfo;
 import com.cac.repository.UserRepository;
 
 @Service
-public class UserService{
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    
-    public UserInfo createUser(UserInfo userInfo){
+
+    public UserInfo createUser(UserInfo userInfo) {
         userInfo.setRole(userInfo.getRole().toUpperCase());
         return userRepository.save(userInfo);
     }
 
-    public UserInfo getUserByUsername(String username) throws UserNotFoundException{
-        UserInfo userData = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User not found with username:"+username));
+    public UserInfo getUserByUsername(String username) throws UserNotFoundException {
+        UserInfo userData = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username:" + username));
         return userData;
     }
 
     public String verifyLoginDetails(LoginDetails loginDetails) throws LoginFailedException, UserNotFoundException {
-            UserInfo user = userRepository.findByUsername(loginDetails.getUsername()).orElseThrow(() -> new UserNotFoundException("User not found with username:"+loginDetails.getUsername()));
-            if(!user.getPassword().equals(loginDetails.getPassword())){
-                throw new LoginFailedException( "Invalid username or password. Try again!");
-            }
+        UserInfo user = userRepository.findByUsername(loginDetails.getUsername()).orElseThrow(
+                () -> new UserNotFoundException("User not found with username:" + loginDetails.getUsername()));
+        if (!user.getPassword().equals(loginDetails.getPassword())) {
+            throw new LoginFailedException("Invalid username or password. Try again!");
+        }
 
-            // Check if the role matches the login type
-            if (("admin".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("ADMIN")) ||
-                ("patient".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("PATIENT"))) {
-                    return "Login successfull.";
-            } else {
-                throw new LoginFailedException( "Invalid details. Try again!");
-            }
+        // Check if the role matches the login type
+        if (("admin".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("ADMIN"))) {
+            return "Welcome Back, " + user.getName()+ "!";
+        }
+        if ("patient".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("PATIENT")) {
+            return "Welcome Back, " + user.getRole() + "!";
+        } else {
+            throw new LoginFailedException("Invalid details. Try again!");
+        }
     }
 
 }
