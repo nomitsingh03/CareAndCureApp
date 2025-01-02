@@ -83,7 +83,7 @@ public class PatientClientController {
 			model.addAttribute("message", message);
 			session.removeAttribute(message);
 		}
-		return "homePage";
+		return "homePageView";
 	}
 
 	/**
@@ -108,6 +108,61 @@ public class PatientClientController {
 	@GetMapping("/searchPatient")
 	public String searchPatient() {
 		return "patientSearch";
+	}
+
+	@GetMapping("/patientLoginForm")
+	public String patientLoginForm() {
+		return "patientLoginForm";
+	}
+
+	@GetMapping("/patientHomePage")
+	public String patientHomePage(HttpSession session, Model model) {
+		session.setAttribute("userRole", "patient");
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		return "patientHomePage";
+	}
+
+	@GetMapping("/adminHomePage")
+	public String adminHomePage(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		return "adminHomePage";
+	}
+	
+	@GetMapping("/doctorHomePage")
+	public String doctorHomePage(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		String userRole = (String) session.getAttribute("userRole");
+		if (userRole != null) {
+			model.addAttribute("userRole", userRole);
+		}
+		return "doctorLoginForm";
 	}
 
 	/**
@@ -499,7 +554,7 @@ public class PatientClientController {
 			HttpSession session) {
 		if (username.isEmpty() || password.isEmpty()) {
 			model.addAttribute("errorMessage", "Please enter Patient Id and Password.");
-			return "homePage";
+			return "patientHomePage";
 		}
 		LoginDetails details = new LoginDetails(username, password, "patient");
 
@@ -523,14 +578,14 @@ public class PatientClientController {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-				System.out.println(errorMessage.get("error"));
+				
 				session.setAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
-				System.out.println(parseException.getMessage());
+				
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
 		}
-		return "redirect:/"; // Redirect back to the login page in case of failure
+		return "redirect:/patientHomePage"; // Redirect back to the login page in case of failure
 	}
 
 }

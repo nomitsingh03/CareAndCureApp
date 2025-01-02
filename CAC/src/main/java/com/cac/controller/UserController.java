@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cac.exception.LoginFailedException;
 import com.cac.exception.UserNotFoundException;
 import com.cac.model.LoginDetails;
 import com.cac.model.UserInfo;
@@ -29,7 +28,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(
-            @RequestBody LoginDetails loginDetails) throws LoginFailedException, UserNotFoundException {
+            @RequestBody LoginDetails loginDetails) throws UserNotFoundException {
         return new ResponseEntity<>(userService.verifyLoginDetails(loginDetails), HttpStatus.OK);
     }
 

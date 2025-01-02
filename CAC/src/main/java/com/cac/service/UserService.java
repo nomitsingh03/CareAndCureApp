@@ -3,7 +3,6 @@ package com.cac.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.cac.exception.LoginFailedException;
 import com.cac.exception.UserNotFoundException;
 import com.cac.model.LoginDetails;
 import com.cac.model.UserInfo;
@@ -26,23 +25,27 @@ public class UserService {
         return userData;
     }
 
-    public String verifyLoginDetails(LoginDetails loginDetails) throws LoginFailedException, UserNotFoundException {
+    public String verifyLoginDetails(LoginDetails loginDetails) throws UserNotFoundException {
         
         UserInfo user = userRepository.findByUsername(loginDetails.getUsername()).orElseThrow(
                 () -> new UserNotFoundException("User not found with username:" + loginDetails.getUsername()));
 
         if (!user.getPassword().equals(loginDetails.getPassword())) {
-            throw new LoginFailedException("Invalid username or password. Try again!");
+            throw new UserNotFoundException("Invalid username or password. Try again!");
         }
 
         // Check if the role matches the login type
         if (("admin".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("ADMIN"))) {
             return "Welcome Back, " + user.getName()+ "!";
         }
+        if (("doctor".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("DOCTOR"))) {
+            System.out.println("doctor");
+            return "Welcome Back, " + user.getName()+ "!";
+        }
         if ("patient".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("PATIENT")) {
             return "Welcome Back, " + user.getPassword() + "!";
         } else {
-            throw new LoginFailedException("Invalid details. Try again!");
+            throw new UserNotFoundException("Invalid details. Try again!");
         }
     }
 

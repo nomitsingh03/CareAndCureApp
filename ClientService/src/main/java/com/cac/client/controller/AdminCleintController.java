@@ -49,6 +49,12 @@ public class AdminCleintController {
 		return "adminRegistration";
 	}
 
+	@GetMapping("/adminLoginForm")
+	public String adminLoginForm() {
+		return "adminLoginForm";
+	}
+	
+
 	/**
 	 * Handles requests to the admin dashboard page.
 	 * 
@@ -175,7 +181,7 @@ public class AdminCleintController {
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
 		} 
-		return "redirect:/";  // Redirect back to the login page in case of failure
+		return "redirect:/adminHomePage";  // Redirect back to the login page in case of failure
 	}
 
 	/**
