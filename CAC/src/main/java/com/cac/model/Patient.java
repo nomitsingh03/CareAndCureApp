@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
 public class Patient {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int patientId;
 	
 	@Column(nullable = false)
@@ -38,7 +38,7 @@ public class Patient {
 	@NotBlank(message = "Contact Number is mandatory")
 	@Column(nullable = false)
 	@Pattern(
-			regexp = "^\\+[1-9]{1}[0-9]{1,3}[0-9]{10}$",
+			regexp = "^\\+[1-9]{1}[0-9]{0,2}[0-9]{10}$",
 			message = "Contact number must start with a country code (e.g., +1) followed by a 10-digit mobile number"
 	)
 	private String contactNumber;
