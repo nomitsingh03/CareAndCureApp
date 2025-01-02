@@ -70,8 +70,6 @@ public class PatientService {
 	public Patient changeActive(int id) throws UserNotFoundException {
 		// TODO Auto-generated method stub
 		Patient patient = patientRepository.findById(id).orElseThrow(()->new UserNotFoundException("Patient not found with Id: "+id));
-		System.out.println(patient.isActive());
-		//if(patient==null) return null;
 		patient.setActive(!patient.isActive());
 		return patientRepository.save(patient);
 	}

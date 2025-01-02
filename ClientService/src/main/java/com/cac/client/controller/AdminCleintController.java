@@ -1,5 +1,7 @@
 package com.cac.client.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -163,16 +165,16 @@ public class AdminCleintController {
 			return "redirect:/adminPage"; // Admin-specific page
 
 		} catch (HttpStatusCodeException e) {
-			ObjectMapper objectMapper = new ObjectMapper();
 			try {
-				String errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
-				session.setAttribute("errorMessage", errorMessage);
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				System.out.println(errorMessage.get("error"));
+				session.setAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
-				session.setAttribute("errorMessage", e.getMessage());
+				System.out.println(parseException.getMessage());
+				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
-		} catch (Exception e) {
-			session.setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
-		}
+		} 
 		return "redirect:/";  // Redirect back to the login page in case of failure
 	}
 

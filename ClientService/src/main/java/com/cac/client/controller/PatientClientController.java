@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,7 +69,7 @@ public class PatientClientController {
 	/**
 	 * Handles requests to the home page.
 	 * 
-	 * @return the name of the home page view
+	 * @return the name of the home page view i.e. homePage.html
 	 */
 	@GetMapping("/")
 	public String homePage(HttpSession session, Model model) {
@@ -190,9 +191,8 @@ public class PatientClientController {
 				// Parse validation errors from the response body
 				ObjectMapper objectMapper = new ObjectMapper();
 				try {
-					
-						Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-						model.addAttribute("validationErrors", errors);
+					Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+					model.addAttribute("validationErrors", errors);
 					
 				} catch (Exception parseException) {
 					model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
@@ -233,12 +233,10 @@ public class PatientClientController {
 					});
 			patientList = response.getBody();
 		} catch (HttpStatusCodeException e) {
-			ObjectMapper objectMapper = new ObjectMapper();
-				
-			String errorMessage;
 			try {
-				errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
-				model.addAttribute("errorMessage", errorMessage);
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				model.addAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
 				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
@@ -279,10 +277,10 @@ public class PatientClientController {
 			}
 
 		} catch (HttpStatusCodeException e) {
-			ObjectMapper objectMapper = new ObjectMapper();
 			try {
-				String errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
-				model.addAttribute("errorMessage", errorMessage);
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				model.addAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
 				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
@@ -420,7 +418,7 @@ public class PatientClientController {
 	 * @return the name of the view to display the updated patient list
 	 */
 	@GetMapping("/deactivatePatient")
-	public String deactivatePAtient(@RequestParam("patientId") int patientId, Model model) {
+	public String deactivatePatient(@RequestParam("patientId") int patientId, Model model) {
 		Patient patient = null;
 		String url = "http://localhost:8084/deactivatePatient/" + patientId;
 		HttpHeaders headers = new HttpHeaders();
@@ -432,7 +430,7 @@ public class PatientClientController {
 			if(patient.isActive())
 			model.addAttribute("successMessage", "Patient with Id (" + patientId + ") activated successfully.");
 			else 
-			model.addAttribute("successMessage", "Patient with Id (" + patientId + ") deactivated successfully.");
+			model.addAttribute("errorMessage", "Patient with Id (" + patientId + ") deactivated successfully.");
 			return getAllPatient(model);
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			model.addAttribute("errorMessage",
@@ -521,16 +519,16 @@ public class PatientClientController {
 			return "redirect:/patientPage"; // Admin-specific page
 
 		} catch (HttpStatusCodeException e) {
-			ObjectMapper objectMapper = new ObjectMapper();
+			System.out.println(e.getMessage());
 			try {
-				String errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), String.class);
-				System.out.println(errorMessage);
-				session.setAttribute("errorMessage", errorMessage);
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				System.out.println(errorMessage.get("error"));
+				session.setAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
+				System.out.println(parseException.getMessage());
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
-		} catch (Exception e) {
-			session.setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
 		}
 		return "redirect:/"; // Redirect back to the login page in case of failure
 	}

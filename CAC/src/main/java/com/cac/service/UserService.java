@@ -27,8 +27,10 @@ public class UserService {
     }
 
     public String verifyLoginDetails(LoginDetails loginDetails) throws LoginFailedException, UserNotFoundException {
+        
         UserInfo user = userRepository.findByUsername(loginDetails.getUsername()).orElseThrow(
                 () -> new UserNotFoundException("User not found with username:" + loginDetails.getUsername()));
+
         if (!user.getPassword().equals(loginDetails.getPassword())) {
             throw new LoginFailedException("Invalid username or password. Try again!");
         }

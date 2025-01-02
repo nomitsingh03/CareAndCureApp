@@ -16,9 +16,6 @@ import com.cac.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
-
-
 @RestController
 public class UserController {
 
@@ -26,15 +23,14 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/userRegister")
-	public ResponseEntity<UserInfo> userLogin(@RequestBody UserInfo user) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
-	}
-    
-	 @PostMapping("/login")
+    public ResponseEntity<UserInfo> userLogin(@RequestBody UserInfo user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
+    }
+
+    @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody LoginDetails loginDetails) throws LoginFailedException, UserNotFoundException {
-                System.out.println(loginDetails.getUsername()+" "+loginDetails.getPassword());
-			return new ResponseEntity<>(userService.verifyLoginDetails(loginDetails), HttpStatus.OK);
+        return new ResponseEntity<>(userService.verifyLoginDetails(loginDetails), HttpStatus.OK);
     }
 
     @GetMapping("/viewUserInfo/{username}")
@@ -42,6 +38,5 @@ public class UserController {
         UserInfo userInfo = userService.getUserByUsername(username);
         return new ResponseEntity<>(userInfo, HttpStatus.OK);
     }
-    
-	
+
 }
