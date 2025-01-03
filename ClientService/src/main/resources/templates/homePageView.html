@@ -1,131 +1,251 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Care and Cure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Base Reset */
-        * {
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            background-color: #f4f4f4;
+            scroll-behavior: smooth;
         }
 
-        /* General Body Styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #85d7f4, #d4eff7);
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* Header Styling */
-        h1 {
-            font-size: 28px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Form Container */
-        .form-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.6s ease-in-out;
+        header {
+            background: linear-gradient(90deg, #4faaf5, #044373);
+            color: white;
+            padding: 1.5rem 0;
             text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 2rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            animation: slideInDown 1s ease-out;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .login-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .login-button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(90deg, #53b0fc, #0b79d0);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg,  #0b79d0, #53b0fc);
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+            background: url('https://img.freepik.com/free-photo/stethoscope-copy-space_23-2147652347.jpg') no-repeat center center;
+            background-size: cover;
+            position: relative;
+        }
+
+        .features::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5);
+            z-index: 1;
+        }
+
+        .feature {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            text-align: center;
+            width: 30%;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 1s ease-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #2196F3;
+        }
+
+        .feature h2 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        footer {
+            background: linear-gradient(90deg, #333, #111);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 1s ease-out;
+        }
+
+        footer a {
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .feature {
+                width: 100%;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            header {
+                font-size: 1.5rem;
+            }
+
+            .cta-button {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
                 transform: translateY(0);
+                opacity: 1;
             }
         }
 
-        /* Buttons */
-        button {
-            margin-top: 15px;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: white;
-            background: linear-gradient(135deg, #43aa8b, #a4efc9);
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        button:hover {
-            background: linear-gradient(135deg, #a4efc9, #43aa8b);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-            transform: translateY(-2px);
-        }
-
-        
-        
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 24px;
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
             }
-
-            button {
-                font-size: 14px;
-            }
-
-            input[type="text"],
-            input[type="number"],
-            input[type="password"],
-            #selectLogin {
-                font-size: 14px;
+            to {
+                transform: translateY(0);
+                opacity: 1;
             }
         }
     </style>
 </head>
-
 <body>
-    <!-- Page Title -->
-    <h1>Home Page</h1>
-
-    <!-- Patient Registration Button -->
-    <div class="form-container">
-
-        <!-- Patient Button -->
-        <button class="" onclick="window.location.href='/patientHomePage'">
-            Patient
-        </button>
-
-        <!-- Admin Button -->
-        <button class="" onclick="window.location.href='/adminHomePage'">
-         Admin
-        </button>
-
-       <!-- Doctor Button -->
-        <button class="" onclick="window.location.href='/doctorHomePage'">
-            Doctor
-        </button>
+    <header>
+        <h1>Care and Cure App</h1>
+        <h2 style="font-size: 1.5rem; font-family: 'Roboto', Arial, sans-serif; font-weight: 700; margin-top: 0.5rem;">Your Health, Our Priority....</h2>
+    </header>
+    <div id="features" class="container">
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-user-md"></i>
+                <h2>For Doctors</h2>
+                <p>Manage your appointments and patient records efficiently.</p>
+                <a href="/doctorHomePage" class="login-button">Doctor Login</a>
+            </div>
+            <div class="feature">
+                <i class="fas fa-procedures"></i>
+                <h2>For Patients</h2>
+                <p>Book appointments and access your medical history easily.</p>
+                <a href="/patientHomePage" class="login-button">Patient Login</a>
+            </div>
+            <div class="feature">
+                <i class="fas fa-hospital"></i>
+                <h2>Our Services</h2>
+                <p>Explore the wide range of healthcare services we offer.</p>
+                <a href="/adminHomePage" class="login-button">Admin Login</a>
+            </div>
+        </div>
     </div>
-
+    <footer>
+        <p>&copy; 2024 Care and Cure. All rights reserved. | <a href="#features">Back to Top</a></p>
+    </footer>
 </body>
-
 </html>
