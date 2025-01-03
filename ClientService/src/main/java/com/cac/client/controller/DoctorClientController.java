@@ -30,8 +30,33 @@ public class DoctorClientController {
     private RestTemplate restTemplate;
 
     @GetMapping("/doctorLoginForm")
-	public String doctorLoginForm() {
+	public String doctorLoginForm(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		String userRole = (String) session.getAttribute("userRole");
+		if (userRole != null) {
+			model.addAttribute("userRole", userRole);
+		}
 		return "doctorLoginForm";
+	}
+
+
+	@GetMapping("/doctorHomePage")
+	public String doctorHomePage(HttpSession session, Model model) {
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		return "doctorHomePage";
 	}
 
     @PostMapping("/doctorLogin")
@@ -47,10 +72,10 @@ public class DoctorClientController {
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
 			String message = response.getBody();
-			model.addAttribute("message", message);
+			session.setAttribute("message", message);
 			// model.addAttribute("username", username);
 			session.setAttribute("userRole", "doctor");
-			return "doctorHomePage"; // Admin-specific page
+			return "redirect:/doctorHomePage"; // Admin-specific page
 
 		} catch (HttpStatusCodeException e) {
 			try {
@@ -62,7 +87,7 @@ public class DoctorClientController {
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
 		} 
-		return "redirect:/doctorHomePage";  // Redirect back to the login page in case of failure
+		return "redirect:/doctorLoginForm";  // Redirect back to the login page in case of failure
 	}
 
 	@GetMapping("/updatePatientByDoctor")
