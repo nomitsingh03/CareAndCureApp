@@ -405,7 +405,7 @@ public class PatientClientController {
 		}
 		if (patient != null) {
 			model.addAttribute("patient", patient);
-			return "updatePage";
+			return "updatePatient";
 		} else {
 			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
 			return "patientList";

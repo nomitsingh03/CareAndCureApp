@@ -12,10 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cac.client.model.LoginDetails;
+import com.cac.client.model.Patient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,7 +48,7 @@ public class DoctorClientController {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
 			String message = response.getBody();
 			model.addAttribute("message", message);
-			model.addAttribute("username", username);
+			// model.addAttribute("username", username);
 			session.setAttribute("userRole", "doctor");
 			return "doctorHomePage"; // Admin-specific page
 
@@ -60,6 +63,27 @@ public class DoctorClientController {
 			}
 		} 
 		return "redirect:/doctorHomePage";  // Redirect back to the login page in case of failure
+	}
+
+	@GetMapping("/updatePatientByDoctor")
+	public String updatePatient(@RequestParam("id") int patientId, Model model) {
+		Patient patient = null;
+		String url = "http://localhost:8084/viewPatient/" + patientId;
+		try {
+			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
+			patient = response.getBody();
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			model.addAttribute("errorMessage",
+					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
+			return "patientList";
+		}
+		if (patient != null) {
+			model.addAttribute("patient", patient);
+			return "updatePatientByDoctorPage";
+		} else {
+			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
+			return "patientList";
+		}
 	}
     
 }

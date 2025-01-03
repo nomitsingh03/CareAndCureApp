@@ -21,7 +21,7 @@ import jakarta.validation.constraints.Size;
 public class Patient {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int patientId;
 	
 	@Column(nullable = false)
@@ -44,7 +44,7 @@ public class Patient {
 	private String contactNumber;
 
 
-	@Email(message = "Enter valid email", regexp = "^[a-zA-Z0-9+_.-]+@gmail\\.com$")
+	@Email(message = "Enter valid email", regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$")
 	@Column(unique = true)
 	private String emailId;
 	private String medicalHistory;
@@ -54,6 +54,7 @@ public class Patient {
 	private String allergies;
 	private String medications;
 	private String treatments;
+	private String insuranceDetails;
 	private boolean isActive;
 	
 	public int getPatientId() {
@@ -133,6 +134,12 @@ public class Patient {
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+	public String getInsuranceDetails() {
+		return insuranceDetails;
+	}
+	public void setInsuranceDetails(String insuranceDetails) {
+		this.insuranceDetails = insuranceDetails;
 	}
 	
 	

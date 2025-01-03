@@ -16,6 +16,7 @@ public class Patient {
 	private String allergies;
 	private String medications;
 	private String treatments;
+	private String insuranceDetails;
 	private boolean isActive;
 
 	public int getPatientId() {
@@ -123,12 +124,12 @@ public class Patient {
 		this.isActive = isActive;
 	}
 
-	@Override
-	public String toString() {
-		return "Patient [patientId=" + patientId + ", patientName=" + patientName + ", age=" + age + ", dateOfBirth="
-				+ dateOfBirth + ", gender=" + gender + ", contactNumber=" + contactNumber + ", emailId=" + emailId
-				+ ", medicalHistory=" + medicalHistory + ", address=" + address + ", allergies=" + allergies
-				+ ", medications=" + medications + ", treatments=" + treatments + ", isActive=" + isActive + "]";
+	public String getInsuranceDetails() {
+		return insuranceDetails;
+	}
+
+	public void setInsuranceDetails(String insuranceDetails) {
+		this.insuranceDetails = insuranceDetails;
 	}
 
 }

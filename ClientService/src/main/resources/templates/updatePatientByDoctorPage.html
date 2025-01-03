@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Patient</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body Styling */
+        body {
+            background: linear-gradient(135deg, #69b3f4, #5ee8f7);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Form Container */
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border-radius: 12px;
+            background: linear-gradient(
+                    rgba(255, 255, 255, 0.9),
+                    rgba(255, 255, 255, 0.9)
+                ),
+                url("https://img.freepik.com/free-photo/medical-theme-close-up-stethoscope_23-2148529296.jpg");
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header Styling */
+        h2 {
+            text-align: center;
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* Success and Error Messages */
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* Form Table Styling */
+        table {
+            width: 100%;
+            border-spacing: 0 15px;
+        }
+
+        table td {
+            padding: 10px 0;
+        }
+
+        label {
+            font-weight: bold;
+            color: #34495e;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Input Fields */
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            background: #f9f9f9;
+            font-size: 16px;
+            color: #34495e;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus {
+            border-color: #3498db;
+            background: #ffffff;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Submit Button */
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Buttons for Navigation */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .next-button {
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width:fit-content;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .next-button:hover {
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .next-button {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Update Patient</h2>
+
+        <!-- Display Error Messages -->
+        <div class="error-message" th:if="${error}">
+            <p th:text="${error}"></p>
+        </div>
+        <div class="error-message" th:if="${errorMessage}">
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <div class="success-message" th:if="${succMessage}">
+            <p th:text="${succMessage}"></p>
+        </div>
+
+        <!-- Update Patient Form -->
+        <form th:action="@{/updatePatient}" th:object="${patient}" method="post">
+            <table>
+                <!-- Patient ID -->
+                <tr>
+                    <td><label for="id">Patient ID:</label></td>
+                    <td>
+                        <input type="text" id="id" th:field="*{patientId}" readonly />
+                    </td>
+                </tr>
+                <!-- Patient Name -->
+                <tr>
+                    <td><label for="patientName">Patient Name:</label></td>
+                    <td>
+                        <input type="text" id="patientName" th:field="*{patientName}" placeholder="Enter Patient Name"
+                            readonly />
+                    </td>
+                </tr>
+                <!-- Email Address -->
+                <tr>
+                    <td><label for="emailId">Email Address:</label></td>
+                    <td>
+                        <input type="email" id="emailId" th:field="*{emailId}" placeholder="Enter a valid email address" readonly/>
+                    </td>
+                </tr>
+                <!-- Contact Number -->
+                <tr>
+                    <td><label for="contactNumber">Contact:</label></td>
+                    <td>
+                        <input type="text" id="contactNumber" th:field="*{contactNumber}"
+                            placeholder="Enter Contact Number" maxlength="10" minlength="10" readonly />
+                    </td>
+                </tr>
+                <!-- Age -->
+                <tr>
+                    <td><label for="age">Age:</label></td>
+                    <td>
+                        <input type="number" id="age" th:field="*{age}" placeholder="Enter the Age" readonly />
+                    </td>
+                </tr>
+                <!-- Address -->
+                <tr>
+                    <td><label for="address">Address:</label></td>
+                    <td>
+                        <input type="text" id="address" th:field="*{address}" placeholder="Enter the Address" readonly />
+                    </td>
+                </tr>
+                <!-- Allergies -->
+                <tr>
+                    <td><label for="allergies">Allergies:</label></td>
+                    <td>
+                        <input type="text" id="allergies" th:field="*{allergies}" placeholder="Enter Allergies" />
+                    </td>
+                </tr>
+                <!-- Medications -->
+                <tr>
+                    <td><label for="medications">Medications:</label></td>
+                    <td>
+                        <input type="text" id="medications" th:field="*{medications}" placeholder="Enter Medications" />
+                    </td>
+                </tr>
+                <!-- Treatments -->
+                <tr>
+                    <td><label for="treatments">Treatments:</label></td>
+                    <td>
+                        <input type="text" id="treatments" th:field="*{treatments}" placeholder="Enter Treatments" />
+                    </td>
+                </tr>
+
+                <!-- Medical History -->
+                <tr>
+                    <td><label for="medicalHistory">Medical History:</label></td>
+                    <td>
+                        <input type="text" id="medicalHistory" th:field="*{medicalHistory}"
+                            placeholder="Enter Medical History" />
+                    </td>
+                </tr>
+
+                <!-- Insurance Details -->
+                <tr>
+                    <td><label for="insurance">Insurance Details:</label></td>
+                    <td>
+                        <input type="text" id="insurance" th:field="*{insuranceDetails}"
+                            placeholder="Enter Insurance Details" readonly/>
+                    </td>
+                </tr>
+
+                <!-- Submit Button -->
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Update" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!-- Navigation Buttons -->
+        <div class="button-container">
+            <div th:if="${userRole=='admin'}">
+                <button class="next-button" onclick="window.location.href='/searchPatient'">Go to Search Page</button>
+                <button class="next-button" onclick="window.location.href='/adminPage'">Admin Home</button></div>
+            <div th:if="${userRole=='patient'}">
+                <button class="next-button" onclick="window.location.href='/patientPage'">Patient Home</button></div>
+        </div>
+    </div>
+</body>
+
+</html>
