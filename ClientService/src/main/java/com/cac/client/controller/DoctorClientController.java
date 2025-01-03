@@ -12,10 +12,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
 import com.cac.client.model.LoginDetails;
+import com.cac.client.model.Patient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
@@ -27,8 +30,33 @@ public class DoctorClientController {
     private RestTemplate restTemplate;
 
     @GetMapping("/doctorLoginForm")
-	public String doctorLoginForm() {
+	public String doctorLoginForm(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		String userRole = (String) session.getAttribute("userRole");
+		if (userRole != null) {
+			model.addAttribute("userRole", userRole);
+		}
 		return "doctorLoginForm";
+	}
+
+
+	@GetMapping("/doctorHomePage")
+	public String doctorHomePage(HttpSession session, Model model) {
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		return "doctorHomePage";
 	}
 
     @PostMapping("/doctorLogin")
@@ -44,10 +72,10 @@ public class DoctorClientController {
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
 			String message = response.getBody();
-			model.addAttribute("message", message);
-			model.addAttribute("username", username);
+			session.setAttribute("message", message);
+			// model.addAttribute("username", username);
 			session.setAttribute("userRole", "doctor");
-			return "doctorHomePage"; // Admin-specific page
+			return "redirect:/doctorHomePage"; // Admin-specific page
 
 		} catch (HttpStatusCodeException e) {
 			try {
@@ -59,7 +87,28 @@ public class DoctorClientController {
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
 		} 
-		return "redirect:/doctorHomePage";  // Redirect back to the login page in case of failure
+		return "redirect:/doctorLoginForm";  // Redirect back to the login page in case of failure
+	}
+
+	@GetMapping("/updatePatientByDoctor")
+	public String updatePatient(@RequestParam("id") int patientId, Model model) {
+		Patient patient = null;
+		String url = "http://localhost:8084/viewPatient/" + patientId;
+		try {
+			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
+			patient = response.getBody();
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			model.addAttribute("errorMessage",
+					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
+			return "patientList";
+		}
+		if (patient != null) {
+			model.addAttribute("patient", patient);
+			return "updatePatientByDoctorPage";
+		} else {
+			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
+			return "patientList";
+		}
 	}
     
 }

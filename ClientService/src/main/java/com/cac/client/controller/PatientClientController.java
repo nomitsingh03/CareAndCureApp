@@ -146,24 +146,6 @@ public class PatientClientController {
 		return "adminHomePage";
 	}
 	
-	@GetMapping("/doctorHomePage")
-	public String doctorHomePage(HttpSession session, Model model) {
-		String errorMessage = (String) session.getAttribute("errorMessage");
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
-		}
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
-		String userRole = (String) session.getAttribute("userRole");
-		if (userRole != null) {
-			model.addAttribute("userRole", userRole);
-		}
-		return "doctorLoginForm";
-	}
 
 	/**
 	 * Handles requests to the patient details page.
@@ -405,7 +387,7 @@ public class PatientClientController {
 		}
 		if (patient != null) {
 			model.addAttribute("patient", patient);
-			return "updatePage";
+			return "updatePatient";
 		} else {
 			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
 			return "patientList";

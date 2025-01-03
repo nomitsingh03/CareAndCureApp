@@ -189,7 +189,7 @@
 
 <body>
     <div class="form-container">
-        <h2>Update Patient</h2>
+        <h2>Update Patient Details</h2>
 
         <!-- Display Error Messages -->
         <div class="error-message" th:if="${error}">
@@ -278,6 +278,16 @@
                             placeholder="Enter Medical History" />
                     </td>
                 </tr>
+
+                <!-- Insurance Details -->
+                <tr>
+                    <td><label for="insurance">Insurance Details:</label></td>
+                    <td>
+                        <input type="text" id="insurance" th:field="*{insuranceDetails}"
+                            placeholder="Enter Insurance Details" />
+                    </td>
+                </tr>
+
                 <!-- Submit Button -->
                 <tr>
                     <td colspan="2">
@@ -289,11 +299,10 @@
 
         <!-- Navigation Buttons -->
         <div class="button-container">
-            <div th:if="${userRole=='admin'}">
+            <div>
                 <button class="next-button" onclick="window.location.href='/searchPatient'">Go to Search Page</button>
                 <button class="next-button" onclick="window.location.href='/adminPage'">Admin Home</button></div>
-            <div th:if="${userRole=='patient'}">
-                <button class="next-button" onclick="window.location.href='/patientPage'">Patient Home</button></div>
+            
         </div>
     </div>
 </body>

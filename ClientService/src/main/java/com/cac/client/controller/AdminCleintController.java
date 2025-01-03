@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.cac.client.model.AdminDto;
 import com.cac.client.model.LoginDetails;
+import com.cac.client.model.Patient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -210,5 +211,26 @@ public class AdminCleintController {
 			model.addAttribute("errorMessage", "Unable to fetch Admin details. Please try again later.");
 		}
 		return "viewAdminProfilePage";
+	}
+
+	@GetMapping("/updatePatientByAdmin")
+	public String updatePatient(@RequestParam("id") int patientId, Model model) {
+		Patient patient = null;
+		String url = "http://localhost:8084/viewPatient/" + patientId;
+		try {
+			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
+			patient = response.getBody();
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			model.addAttribute("errorMessage",
+					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
+			return "patientList";
+		}
+		if (patient != null) {
+			model.addAttribute("patient", patient);
+			return "updatePatientByAdminPage";
+		} else {
+			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
+			return "patientList";
+		}
 	}
 }
