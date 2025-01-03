@@ -151,6 +151,11 @@
             <div><strong>Email:</strong> [[${patient.emailId}]]</div>
             <div><strong>Phone:</strong> [[${patient.contactNumber}]]</div>
             <div><strong>Address:</strong> [[${patient.address}]]</div>
+            <div><strong>Allergies:</strong> [[${patient.allergies}]]</div>
+            <div><strong>Medications:</strong> [[${patient.medications}]]</div>
+            <div><strong>Treatments:</strong> [[${patient.treatments}]]</div>
+            <div><strong>Insurance Details:</strong> [[${patient.insuranceDetails}]]</div>
+
             <div>
                 <strong>Status:</strong> 
                 <span th:text="${patient.isActive ? 'Active' : 'Not Active'}"></span>
