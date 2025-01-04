@@ -419,7 +419,7 @@ public class PatientClientController {
 		String reuestUrl = "http://localhost:8084/updatePatient/" + patient.getPatientId();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
-
+				
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
 
 		try {
@@ -433,12 +433,12 @@ public class PatientClientController {
 			String errorMessage = rootNode.path("message").asText();
 			model.addAttribute("errorMessage", errorMessage);
 			model.addAttribute("patient", patient);
-			return "updatePage";
+			return "updatePatient";
 		} 
 
 		model.addAttribute("patient", patientObj);
 		model.addAttribute("succMessage", " Patient updated Successfully!");
-		return "updatePage";
+		return "updatePatient";
 
 	}
 
