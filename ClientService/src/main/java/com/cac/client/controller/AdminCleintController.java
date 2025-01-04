@@ -54,6 +54,22 @@ public class AdminCleintController {
 	public String adminLoginForm() {
 		return "adminLoginForm";
 	}
+
+	@GetMapping("/adminHomePage")
+	public String adminHomePage(HttpSession session, Model model) {
+		session.setAttribute("userRole", "patient");
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute(errorMessage);
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute(message);
+		}
+		return "adminHomePage";
+	}
 	
 
 	/**
@@ -75,6 +91,8 @@ public class AdminCleintController {
 		}
 		return "adminPage";
 	}
+
+	
 
 	/**
 	 * Adds common model attributes for all requests handled by this controller.

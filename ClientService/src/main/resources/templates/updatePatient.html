@@ -303,8 +303,12 @@
 
         <!-- Navigation Buttons -->
         <div class="button-container">
-            
-            <button class="next-button" onclick="window.location.href='/patientPage'">Home Page</button>
+            <div th:if="${userRole=='patient'}">
+            <button class="next-button" onclick="window.location.href='/patientPage'">Home Page</button></div>
+            <div th:if="${userRole=='admin'}">
+            <button class="next-button" onclick="window.location.href='/adminPage'">Home Page</button></div>
+            <div th:if="${userRole=='doctor'}">
+                <button class="next-button" onclick="window.location.href='/doctorHomePage'">Home Page</button></div>
         </div>
     </div>
 </body>
