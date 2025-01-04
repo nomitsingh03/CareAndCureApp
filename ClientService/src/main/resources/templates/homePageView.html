@@ -28,9 +28,10 @@
         }
 
         .container {
-            max-width: 1200px;
+            /* max-width: 1400px; */
+            scroll-behavior: smooth;
             margin: 0 auto;
-            padding: 2rem;
+            /* padding: 0.5rem; */
         }
 
         .login-buttons {
@@ -62,12 +63,15 @@
         .features {
             display: flex;
             justify-content: space-around;
-            margin-top: 2rem;
             flex-wrap: wrap;
             gap: 2rem;
             background: url('https://img.freepik.com/free-photo/stethoscope-copy-space_23-2147652347.jpg') no-repeat center center;
             background-size: cover;
             position: relative;
+            height: 100vh;
+            width: 100%;
+            padding: 2rem 0rem;
+            box-sizing: border-box;
         }
 
         .features::before {

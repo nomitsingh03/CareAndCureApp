@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Admin Portal</title>
     <style>
         /* Base Reset */
         * {
@@ -28,88 +28,96 @@
 
         /* Header Styling */
         h1 {
-            font-size: 28px;
+            font-size: 36px;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            width: 100%;
+            max-width: 1200px;
+            height: 250px;
+            background: url('https://cdn.prod.website-files.com/6076c0250a294b2dc673fb34/6720d09a445d739c905bae2c_How%20Long%20to%20Keep%20Medical%20Records%20and%20Bills.webp') no-repeat center center/cover;
+            /* filter: brightness(1.5); */
+            border-radius: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+            animation: slideInDown 1s ease-in-out;
+            
+        }
+
+        
+        .hero-text {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+            animation: slideInDown 1s ease-in-out;
+            
+        }
+
+        .hero-text h2 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #555;
         }
 
         /* Form Container */
         .form-container {
             width: 100%;
-            max-width: 500px;
-            padding: 20px;
+            max-width: 600px;
+            padding: 30px;
             margin-bottom: 20px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-            animation: fadeIn 0.6s ease-in-out;
+            background: linear-gradient(135deg, #d2d1d1,#ffffff);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 1.5s ease-in-out;
             text-align: center;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        
 
         /* Buttons */
         button {
-            margin-top: 15px;
-            padding: 12px 20px;
-            font-size: 16px;
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
             font-weight: bold;
             color: white;
-            background: linear-gradient(135deg, #43aa8b, #a4efc9);
+            background: linear-gradient(135deg, #0b79d0, #53b0fc);
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 1.5s ease-out;
         }
 
         button:hover {
-            background: linear-gradient(135deg, #a4efc9, #43aa8b);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #a4efc9, #0b79d0);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             transform: translateY(-2px);
         }
 
-        /* Input Fields and Dropdown */
-        input[type="text"],
-        input[type="number"],
-        input[type="password"],
-        #selectLogin {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #bdc3c7;
-            border-radius: 8px;
-            background: #f9f9f9;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        input:focus,
-        #selectLogin:focus {
-            border-color: #3498db;
-            background: #ffffff;
-            outline: none;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            font-size: 16px;
-            font-weight: bold;
-            color: #34495e;
-            margin-bottom: 10px;
-            display: inline-block;
+        button + button {
+            margin-left: 15px;
         }
 
         /* Error Message */
@@ -117,55 +125,144 @@
             color: #e74c3c;
             font-size: 16px;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        /* @media (max-width: 768px) {
             h1 {
-                font-size: 24px;
+                font-size: 28px;
             }
 
             button {
-                font-size: 14px;
+                font-size: 16px;
+                padding: 12px 25px;
             }
 
-            input[type="text"],
-            input[type="number"],
-            input[type="password"],
-            #selectLogin {
-                font-size: 14px;
+            .form-container {
+                padding: 20px;
+            }
+
+            .hero {
+                height: 200px;
+            }
+        } */
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            button {
+                font-size: 16px;
+                padding: 12px 25px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .hero {
+                height: 180px;
+            }
+
+            .hero-text h2 {
+                font-size: 22px;
+            }
+
+            .hero-text p {
+                font-size: 16px;
+            }
+        }
+        @keyframes fadeIn {
+            from {
+            opacity: 0;
+            transform: translateY(-20px);
+            }
+            to {
+            opacity: 1;
+            transform: translateY(0);
+            }
+        }
+        @keyframes slideInDown {
+            from {
+            transform: translateY(-100%);
+            opacity: 0;
+            }
+            to {
+            transform: translateY(0);
+            opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% {
+            transform: scale(1);
+            }
+            50% {
+            transform: scale(1.05);
+            }
+            100% {
+            transform: scale(1);
+            }
+        }
+        @keyframes rotate {
+            from {
+            transform: rotate(0deg);
+            }
+            to {
+            transform: rotate(360deg);
+            }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+            }
+            40% {
+            transform: translateY(-30px);
+            }
+            60% {
+            transform: translateY(-15px);
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Page Title -->
-    <h1>Admin Page</h1>
+    <!-- Hero Section -->
+    <div class="hero"></div>
+    <div class="hero-text">
+        <h2>Welcome to Admin Portal</h2>
+        <p>Manage your administrative tasks efficiently.</p>
+    </div>
 
     <!-- Display Error Message -->
     <div th:if="${errorMessage}" class="container">
         <p class="error-message" th:text="${errorMessage}"></p>
     </div>
 
-   
     <div class="form-container">
-
         <!-- Admin Registration Button -->
-        <button class="" onclick="window.location.href='/adminRegistration'">
+        <button onclick="window.location.href='/adminRegistration'">
             Register Admin
         </button>
 
         <!-- Admin Login Button -->
-        <button class="" onclick="window.location.href='/adminLoginForm'">
+        <button onclick="window.location.href='/adminLoginForm'">
             Login Admin
         </button>
-
+        <!-- <p> -->
+        <button onclick="window.location.href='/'">Go To Home Page</button>
     </div>
 
-    <button onclick="window.location.href='/'">Home</button>
-
-   
 </body>
 
 </html>
