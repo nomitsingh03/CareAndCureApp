@@ -268,6 +268,9 @@ public class PatientClientController {
 		}
 		if (patientList != null && patientList.size() != 0) {
 			model.addAttribute("patientList", patientList);
+			// Add search type and value to the model
+            model.addAttribute("searchType", "name");
+            model.addAttribute("searchValue", name);
 			return "patientList";
 		} 
 			return "patientSearch";
@@ -297,6 +300,10 @@ public class PatientClientController {
 				List<Patient> patientList = new ArrayList<>();
 				patientList.add(patient);
 				model.addAttribute("patientList", patientList);
+
+				// Add search type and value to the model
+				model.addAttribute("searchType", "id");
+				model.addAttribute("searchValue", patientId);
 				return "patientList";
 			}
 
@@ -442,7 +449,10 @@ public class PatientClientController {
 	 * @return the name of the view to display the updated patient list
 	 */
 	@GetMapping("/deactivatePatient")
-	public String deactivatePatient(@RequestParam("patientId") int patientId, Model model) {
+	public String deactivatePatient(@RequestParam("patientId") int patientId,
+	@RequestParam(value = "searchType", required = false) String searchType,
+	@RequestParam(value = "searchValue", required = false) String searchValue,
+	Model model) {
 		Patient patient = null;
 		String url = "http://localhost:8084/deactivatePatient/" + patientId;
 		HttpHeaders headers = new HttpHeaders();
@@ -451,11 +461,25 @@ public class PatientClientController {
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Patient.class);
 			patient = response.getBody();
-			if(patient.isActive())
-			model.addAttribute("successMessage", "Patient with Id (" + patientId + ") activated successfully.");
-			else 
-			model.addAttribute("errorMessage", "Patient with Id (" + patientId + ") deactivated successfully.");
-			return getAllPatient(model);
+
+			// Determine success message based on the patient's status
+			if (patient != null && patient.isActive()) {
+				model.addAttribute("successMessage", "Patient with ID (" + patientId + ") activated successfully.");
+			} else {
+				model.addAttribute("errorMessage", "Patient with ID (" + patientId + ") deactivated successfully.");
+			}
+	
+			// Redirect based on the previous search type
+			if ("id".equalsIgnoreCase(searchType)) {
+				return findPatientById(patientId, model);
+			} else if ("name".equalsIgnoreCase(searchType) && searchValue != null) {
+				return findPatientByName(searchValue, model);
+			} else if("viewProfile".equals(searchType)){
+				return viewProfile(patientId, model);
+			} else {
+				// Default behavior: load all patients
+				return getAllPatient(model);
+			}
 		} catch (HttpClientErrorException | HttpServerErrorException e) {
 			model.addAttribute("errorMessage",
 					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");

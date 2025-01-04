@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
     <title>Patient Profile</title>
     <style>
         /* Base Reset */
@@ -136,6 +137,10 @@
 <body>
 
     <div class="profile-container">
+
+            <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+       
         <!-- Profile Header -->
         <div class="profile-header">
             <h1>Patient Profile</h1>
@@ -166,12 +171,16 @@
         <!-- Buttons -->
         <div class="button-container">
             <div th:if="${userRole=='admin'}">
-                <button class="back-button" onclick="window.location.href='/viewAllPatient'">Back to Patients</button>
+                <a th:href="@{'/deactivatePatient?patientId=' + ${patient.patientId} + '&searchType=viewProfile'}" 
+                        class="edit-button">
+                            <th:block th:if="${patient.isActive}">Deactivate</th:block>
+                            <th:block th:unless="${patient.isActive}">Activate</th:block>
+                </a>
             </div>
             <div th:if="${userRole=='patient'}">
                 <button class="back-button" onclick="window.location.href='/patientPage'">Back</button>
             </div>
-            <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="edit-button">Edit Profile</a>
+            <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="edit-button">Update Profile</a>
         </div>
     </div>
 
