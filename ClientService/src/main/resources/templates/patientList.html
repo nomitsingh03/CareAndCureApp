@@ -202,7 +202,6 @@
                     <th>Patient ID</th>
                     <th>Patient Name</th>
                     <th>Email ID</th>
-                    <th>Age</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -211,11 +210,12 @@
                 <tr th:each="patient : ${patientList}">
                     <td th:text="${patient.patientId}"></td>
                     <td th:text="${patient.patientName}"></td>
-                    <td th:text="${patient.emailId}"></td>
                     <td th:text="${patient.age}"></td>
                     <td>
+                        <a th:href="@{'/viewPatientProfile?patientId='+${patient.patientId}}" class="next-button">view Details</a>
                         <a th:href="@{'/updatePatient?id='+${patient.patientId}}" class="next-button">Update</a>
-                        <a th:href="@{'/deactivatePatient?patientId='+${patient.patientId}}" class="next-button">
+                        <a th:href="@{'/deactivatePatient?patientId=' + ${patient.patientId} + '&searchType=' + ${searchType} + '&searchValue=' + ${searchValue}}" 
+                        class="next-button">
                             <th:block th:if="${patient.isActive}">Deactivate</th:block>
                             <th:block th:unless="${patient.isActive}">Activate</th:block>
                         </a>

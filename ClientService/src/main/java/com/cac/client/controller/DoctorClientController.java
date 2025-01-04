@@ -51,6 +51,7 @@ public class DoctorClientController {
 
 	@GetMapping("/doctorHomePage")
 	public String doctorHomePage(HttpSession session, Model model) {
+		session.setAttribute("userRole", "doctor");
 		String message = (String) session.getAttribute("message");
 		if (message != null) {
 			model.addAttribute("message", message);
