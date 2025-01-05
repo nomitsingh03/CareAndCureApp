@@ -15,8 +15,8 @@
       /* Background Styling with Gradient */
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(120deg, #69b3f4, #66f0f7);
-        color: #333;
+        background: linear-gradient(135deg, #85d7f4, #d4eff7);
+        color: #333333;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -26,16 +26,23 @@
 
       /* Card Styling */
       .form-container {
-        background: #ffffff;
+        background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
+          url("https://t4.ftcdn.net/jpg/02/55/77/03/360_F_255770374_rbmJO9gkkIhMBcyVPc3iW016BCLDvcWc.jpg")
+            no-repeat center center/cover;
         width: 100%;
         max-width: 600px;
         padding: 30px;
         border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         animation: fadeIn 0.6s ease-in-out;
-        transition: transform 0.3s ease-in-out;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+      }
+      .form-container:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
       }
 
+      /* Header Styling */
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -49,39 +56,42 @@
 
       .form-container:hover {
         transform: scale(1.02);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
       }
 
       /* Header Styling */
       h2 {
         text-align: center;
-        font-size: 28px;
-        color: #2c3e50;
-        margin-bottom: 15px;
+        font-size: 32px;
+        color: #ffffff;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
       }
 
       /* Subtitle */
       .form-subtitle {
         text-align: center;
-        font-size: 16px;
-        color: #7f8c8d;
+        font-size: 18px;
+        color: #ffffff;
         margin-bottom: 25px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       }
 
       /* Table Layout for Fields */
       table {
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         border-collapse: separate;
-        border-spacing: 0 15px;
+        border-spacing: 0 10px;
       }
 
       table td {
         padding: 8px 0;
       }
-
       label {
         font-weight: bold;
-        color: #34495e;
+        color: #ffffff;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
       }
 
       /* Input Fields Styling */
@@ -97,7 +107,7 @@
         border-radius: 8px;
         background: #f9f9f9;
         font-size: 16px;
-        color: #34495e;
+        color: #1a1a1a;
         transition: all 0.3s ease;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
@@ -108,7 +118,7 @@
       input[type="date"]:focus,
       input[type="password"]:focus,
       textarea:focus {
-        border-color: #4facfe;
+        border-color: #0c1923;
         background: #ffffff;
         outline: none;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -127,7 +137,7 @@
       label[for="male"],
       label[for="female"] {
         margin-right: 15px;
-        color: #34495e;
+        color: #e3e3e3;
       }
 
       /* Submit Button */
@@ -142,33 +152,47 @@
         border-radius: 8px;
         cursor: pointer;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        transition: all 0.3s ease;
+        transition: all 0.5s ease;
+        animation: fadeInUp 1s ease-out;
       }
 
       input[type="submit"]:hover {
         background: linear-gradient(135deg, #00f2fe, #4facfe);
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        transform: translateY(-3px);
+        
+      }
+      @keyframes fadeInUp {
+        from {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
 
       /* Additional Buttons */
       .button-container {
         display: flex;
         justify-content: center;
-        margin-top: 20px;
+        margin-top: 20px; 
       }
       .next-button {
-        margin-top: 20px;
-        padding: 12px 25px;
+        /* margin-top: 10px; */
+        padding: 12px 20px;
         font-size: 16px;
         font-weight: bold;
         background: linear-gradient(135deg, #ff7eb3, #ff758c);
         border: none;
         color: #fff;
-        border-radius: 8px;
+        border-radius: 10px;
         cursor: pointer;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         transition: transform 0.3s ease, background-color 0.3s ease,
-        box-shadow 0.3s ease;
+          box-shadow 0.3s ease,;
+          animation: fadeInUp 1s ease-out;
       }
 
       .next-button:hover {
@@ -176,22 +200,6 @@
         transform: translateY(-3px);
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
       }
-
-      /* .next-button {
-        padding: 10px 20px;
-        font-size: 16px;
-        background: #3498db;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-      }
-
-      .next-button:hover {
-        background: #2980b9;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-      } */
 
       /* Error Message Styling */
       .error-message {
@@ -202,7 +210,6 @@
       }
     </style>
   </head>
-
   <body>
     <div class="form-container">
       <h2>Admin Registration Form</h2>
@@ -216,13 +223,9 @@
       </div>
 
       <!-- Patient Registration Form -->
-      <form
-        th:action="@{/registerAdmin}"
-        th:object="${admin}"
-        method="post"
-      >
+      <form th:action="@{/registerAdmin}" th:object="${admin}" method="post">
         <table>
-          <!-- Patient Name -->
+          <!-- Admin Name -->
           <tr>
             <td><label for="adminName">Admin Name:</label></td>
             <td>
@@ -236,7 +239,7 @@
             </td>
           </tr>
 
-          <!-- Username  -->
+          <!-- Username -->
           <tr>
             <td><label for="username">Username :</label></td>
             <td>
@@ -244,7 +247,7 @@
                 type="text"
                 id="contactNumber"
                 th:field="*{username}"
-                placeholder="Enter  username"
+                placeholder="Enter username"
                 required
               />
             </td>
@@ -269,15 +272,19 @@
               <input type="submit" value="Register" />
             </td>
           </tr>
+          <!-- Home Page Button -->
+          <tr>
+            <td colspan="3" style="text-align: center">
+              <button
+                class="next-button"
+                onclick="window.location.href='/adminHomePage'"
+              >
+                Go to Home Page
+              </button>
+            </td>
+          </tr>
         </table>
       </form>
-
-      <!-- Additional Buttons -->
-      <div class="button-container">
-        <button class="next-button" onclick="window.location.href='/adminHomePage'">
-          Go to Home Page
-        </button>
-      </div>
     </div>
   </body>
 </html>

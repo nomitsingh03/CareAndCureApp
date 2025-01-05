@@ -55,8 +55,9 @@
       /* Image Section */
       .login-image {
         flex: 1;
-        background: url("https://www.shutterstock.com/image-illustration/online-consultation-doctor-on-smartphone-600nw-2150820867.jpg")
-          no-repeat center center/cover;
+        background: url("https://static.vecteezy.com/system/resources/previews/003/689/228/non_2x/online-registration-or-sign-up-login-for-account-on-smartphone-app-user-interface-with-secure-password-mobile-application-for-ui-web-banner-access-cartoon-people-illustration-vector.jpg")
+          no-repeat center center;
+        background-size: contain;
       }
 
       /* Form Section */
@@ -118,6 +119,17 @@
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 1s ease-out;
+      }
+      @keyframes fadeInUp {
+        from {
+          transform: translateY(40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
 
       button:hover {
@@ -187,8 +199,10 @@
             placeholder="Enter your password here..."
             required
           />
-
-          <button type="submit">Login</button>
+            <div style="display: flex; gap: 10px;">
+            <button type="submit">Login</button>
+            <button type="button" onclick="window.location.href='/patientHomePage'">Back</button>
+            </div>
         </form>
       </div>
     </div>
