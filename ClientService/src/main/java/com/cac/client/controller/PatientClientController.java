@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,20 +40,9 @@ public class PatientClientController {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	/**
-	 * Adds user role and patient ID to the model from the current HTTP session.
-	 * 
-	 * This method is annotated with @ModelAttribute, which means it will be
-	 * invoked before any request handling methods in the controller. It checks
-	 * the current HTTP session for the attributes "userRole" and "patientId".
-	 * If these attributes are present, they are added to the model for use in
-	 * the view. The "patientId" attribute is also removed from the session
-	 * after being added to the model to prevent it from being reused in future
-	 * requests.
-	 * 
-	 * @param session the current HTTP session containing user attributes
-	 * @param model   the model to which attributes will be added for the view
-	 */
+	@Value("${base.url}")
+    private String baseUrl;
+
 	@ModelAttribute
 	public void addUserRoleToModel(HttpSession session, Model model) {
 		String userRole = (String) session.getAttribute("userRole");
@@ -66,11 +55,6 @@ public class PatientClientController {
 		}
 	}
 
-	/**
-	 * Handles requests to the home page.
-	 * 
-	 * @return the name of the home page view i.e. homePage.html
-	 */
 	@GetMapping("/")
 	public String homePage(HttpSession session, Model model) {
 		String errorMessage = (String) session.getAttribute("errorMessage");
@@ -86,13 +70,6 @@ public class PatientClientController {
 		return "homePageView";
 	}
 
-	/**
-	 * Handles requests to the patient registration page.
-	 * 
-	 * @param model the model to which attributes are added for the view
-	 * @return the name of the patient registration page view, which is
-	 *         "registration"
-	 */
 	@GetMapping("/patientRegistration")
 	public String registrationPage(Model model) {
 		model.addAttribute("patient", new Patient());
@@ -100,11 +77,6 @@ public class PatientClientController {
 		return "registration";
 	}
 
-	/**
-	 * Handles requests to the patient search page.
-	 * 
-	 * @return the name of the patient search page view, which is "patientSearch"
-	 */
 	@GetMapping("/searchPatient")
 	public String searchPatient() {
 		return "patientSearch";
@@ -131,15 +103,6 @@ public class PatientClientController {
 		return "patientHomePage";
 	}
 
-	
-	
-
-	/**
-	 * Handles requests to the patient details page.
-	 * 
-	 * @param model the model to add attributes to for the view
-	 * @return the name of the patient page view, which is "patientPage"
-	 */
 	@GetMapping("/patientPage")
 	public String patientPage(HttpSession session,Model model) {
 		String errorMessage = (String) session.getAttribute("errorMessage");
@@ -169,35 +132,17 @@ public class PatientClientController {
 		return "adminPage";
 	} */
 
-	/**
-	 * Handles user logout requests.
-	 * 
-	 * @param session the HTTP session to be invalidated
-	 * @return a redirect to the home page view
-	 */
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "redirect:/";
 	}
 
-	/**
-	 * Handles the submission of the patient registration form.
-	 * 
-	 * @param patient the patient object populated from the form data
-	 * @param model   the model to add attributes to for the view
-	 * @return the name of the status page view, which indicates the result of the
-	 *         registration
-	 * @throws JsonMappingException    if there is an error mapping JSON to the
-	 *                                 Patient object
-	 * @throws JsonProcessingException if there is an error processing JSON
-	 */
-
 	@PostMapping("/registerPatient")
 	public String submitPatientRegistration(@ModelAttribute("patient") Patient patient, Model model)
 			throws JsonMappingException, JsonProcessingException {
 		Patient patientObj = null;
-		String reuestUrl = "http://localhost:8084/registerPatient";
+		String reuestUrl = baseUrl+"/registerPatient";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
@@ -234,17 +179,10 @@ public class PatientClientController {
 
 	}
 
-	/**
-	 * Handles requests to find a patient by name.
-	 * 
-	 * @param name  the name of the patient to search for
-	 * @param model the model to add attributes to
-	 * @return the name of the patient search results page view
-	 */
 	@RequestMapping(value = "/findPatientByName", method = RequestMethod.GET)
 	public String findPatientByName(@RequestParam("name") String name, Model model) {
 		List<Patient> patientList = new ArrayList<>();
-		String url = "http://localhost:8084/viewPatientByName/" + name;
+		String url = baseUrl+"/viewPatientByName/" + name;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<List<Patient>> requestEntity = new HttpEntity<>(patientList, headers);
@@ -276,17 +214,10 @@ public class PatientClientController {
 			return "patientSearch";
 	}
 
-	/**
-	 * Handles requests to delete a patient by ID.
-	 * 
-	 * @param patientId the ID of the patient to delete
-	 * @param model     the model to add attributes to
-	 * @return the name of the status page view
-	 */
 	@RequestMapping(value = "/findPatientById", method = RequestMethod.GET)
 	public String findPatientById(@RequestParam("patientId") int patientId, Model model) {
 		Patient patient = null;
-		String url = "http://localhost:8084/viewPatient/" + patientId;
+		String url = baseUrl+"/viewPatient/" + patientId;
 
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(
@@ -321,23 +252,10 @@ public class PatientClientController {
 		return "patientSearch";
 	}
 
-	/**
-	 * Handles GET requests to view a patient's profile.
-	 * 
-	 * This method retrieves the profile of a patient identified by the given
-	 * patientId. It sends a GET request to the specified URL and adds the
-	 * retrieved patient object to the model. If the patient is found, it
-	 * returns the view name for the profile page. In case of an error, it
-	 * adds an error message to the model and returns the same view name.
-	 * 
-	 * @param patientId the ID of the patient whose profile is to be viewed
-	 * @param model     the model to add attributes to for the view
-	 * @return the name of the view to display the patient's profile
-	 */
 	@GetMapping("/viewPatientProfile")
 	public String viewProfile(@RequestParam int patientId, Model model) {
 		Patient patient = null;
-		String url = "http://localhost:8084/viewPatient/" + patientId;
+		String url = baseUrl+"/viewPatient/" + patientId;
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(
 					url,
@@ -354,23 +272,11 @@ public class PatientClientController {
 		}
 	}
 
-	/**
-	 * Handles GET requests to update a patient's information.
-	 * 
-	 * This method retrieves the patient details for the given patientId and
-	 * prepares the model for the update page. If the patient is found, it
-	 * adds the patient object to the model and returns the view name for the
-	 * update page. If the patient is not found or an error occurs, it adds
-	 * an appropriate error message to the model and returns the patient list view.
-	 * 
-	 * @param patientId the ID of the patient to be updated
-	 * @param model     the model to add attributes to for the view
-	 * @return the name of the view to display the update page or patient list
-	 */
+
 	@GetMapping("/updatePatient")
 	public String updatePatient(@RequestParam("id") int patientId, Model model) {
 		Patient patient = null;
-		String url = "http://localhost:8084/viewPatient/" + patientId;
+		String url = baseUrl+"/viewPatient/" + patientId;
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
 			patient = response.getBody();
@@ -388,29 +294,11 @@ public class PatientClientController {
 		}
 	}
 
-	/**
-	 * Handles POST requests to submit updates to a patient's information.
-	 * 
-	 * This method processes the submitted patient data and sends a PUT request
-	 * to update the patient's information on the server. If the update is
-	 * successful, it adds the updated patient object and a success message to
-	 * the model. In case of an error during the update, it captures the error
-	 * message from the response and adds it to the model, along with the
-	 * original patient data for re-display on the update page.
-	 * 
-	 * @param patient the patient object containing updated information
-	 * @param model   the model to add attributes to for the view
-	 * @return the name of the view to display the update page with success or error
-	 *         message
-	 * @throws JsonMappingException    if there is an error mapping JSON to the
-	 *                                 object
-	 * @throws JsonProcessingException if there is an error processing JSON
-	 */
 	@PostMapping("/updatePatient")
 	public String submitUpdatePatient(@ModelAttribute("patient") Patient patient, Model model)
 			throws JsonMappingException, JsonProcessingException {
 		Patient patientObj = null;
-		String reuestUrl = "http://localhost:8084/updatePatient/" + patient.getPatientId();
+		String reuestUrl = baseUrl+"/updatePatient/" + patient.getPatientId();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 				
@@ -423,9 +311,15 @@ public class PatientClientController {
 		} catch (HttpClientErrorException e) {
 
 			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
-			String errorMessage = rootNode.path("message").asText();
-			model.addAttribute("errorMessage", errorMessage);
+					try {
+						Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+					model.addAttribute("validationErrors", errors);
+					} catch (Exception ex) {
+						JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
+						String errorMessage = rootNode.path("message").asText();
+						model.addAttribute("errorMessage", errorMessage);
+					}
+			
 			model.addAttribute("patient", patient);
 			return "updatePatient";
 		} 
@@ -436,25 +330,13 @@ public class PatientClientController {
 
 	}
 
-	/**
-	 * Handles requests to deactivate a patient by their ID.
-	 * 
-	 * This method sends a PUT request to the server to deactivate a patient
-	 * identified by the given patientId. If the operation is successful, it
-	 * retrieves the updated list of all patients and displays it. In case of
-	 * an error, it adds an error message to the model.
-	 * 
-	 * @param patientId the ID of the patient to deactivate
-	 * @param model     the model to add attributes to
-	 * @return the name of the view to display the updated patient list
-	 */
 	@GetMapping("/deactivatePatient")
 	public String deactivatePatient(@RequestParam("patientId") int patientId,
 	@RequestParam(value = "searchType", required = false) String searchType,
 	@RequestParam(value = "searchValue", required = false) String searchValue,
 	Model model) {
 		Patient patient = null;
-		String url = "http://localhost:8084/deactivatePatient/" + patientId;
+		String url = baseUrl+"/deactivatePatient/" + patientId;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
@@ -487,21 +369,11 @@ public class PatientClientController {
 		}
 	}
 
-	/**
-	 * Handles requests to view all patients.
-	 * 
-	 * This method sends a GET request to the server to retrieve a list of all
-	 * patients. If successful, it adds the list to the model for display. If
-	 * there are no patients or an error occurs, it adds an appropriate error
-	 * message to the model.
-	 * 
-	 * @param model the model to add attributes to
-	 * @return the name of the view to display the patient list
-	 */
+	
 	@RequestMapping(value = "/viewAllPatient", method = RequestMethod.GET)
 	public String getAllPatient(Model model) {
 		List<Patient> patientList = new ArrayList<>();
-		String url = "http://localhost:8084/viewAllPatient";
+		String url = baseUrl+"/viewAllPatient";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<List<Patient>> requestEntity = new HttpEntity<>(patientList, headers);
@@ -527,21 +399,7 @@ public class PatientClientController {
 		}
 	}
 
-	/**
-	 * Handles patient login requests.
-	 * 
-	 * This method processes the login form submission for patients. It validates
-	 * the input, constructs a request to the server for authentication, and
-	 * manages the session attributes based on the login result. If successful,
-	 * it redirects to the patient page; otherwise, it returns to the home page
-	 * with an error message.
-	 * 
-	 * @param username the username (patient ID) entered by the user
-	 * @param password the password entered by the user
-	 * @param model    the model to add attributes to
-	 * @param session  the HTTP session to store user information
-	 * @return the name of the view to redirect to
-	 */
+
 	@PostMapping("/patientLogin")
 	public String patientLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
@@ -556,7 +414,7 @@ public class PatientClientController {
 
 		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
 
-		String requestUrl = "http://localhost:8084/login";
+		String requestUrl = baseUrl+"/login";
 
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);

@@ -35,7 +35,7 @@ public class PatientController {
 	}
 	
 	@PutMapping("/updatePatient/{id}")
-	public ResponseEntity<Patient> updatePatient(@PathVariable int id, @RequestBody Patient patient) throws Exception{
+	public ResponseEntity<Patient> updatePatient(@PathVariable int id,@Valid @RequestBody Patient patient) throws Exception{
 		return new ResponseEntity<Patient>(patientService.updatePatient(id, patient), HttpStatus.ACCEPTED);
 	}
 	

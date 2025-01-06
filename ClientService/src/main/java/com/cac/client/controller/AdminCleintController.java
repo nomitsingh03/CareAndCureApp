@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +28,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AdminCleintController {
@@ -37,14 +35,7 @@ public class AdminCleintController {
 	@Autowired
 	public RestTemplate restTemplate;
 
-	/**
-	 * Handles requests to the admin registration page.
-	 * 
-	 * @param model the model to which attributes are added for the view
-	 * @return the name of the admin registration page view, which is
-	 *         "adminRegistration"
-	 */
-	@GetMapping("/adminRegistration")
+		@GetMapping("/adminRegistration")
 	public String adminRegistrationPage(Model model) {
 		model.addAttribute("admin", new AdminDto());
 		return "adminRegistration";
@@ -72,11 +63,6 @@ public class AdminCleintController {
 	}
 	
 
-	/**
-	 * Handles requests to the admin dashboard page.
-	 * 
-	 * @return the name of the admin page view, which is "adminPage"
-	 */
 	@GetMapping("/adminPage")
 	public String adminPage(HttpSession session, Model model) {
 		String errorMessage = (String) session.getAttribute("errorMessage");
@@ -93,13 +79,6 @@ public class AdminCleintController {
 	}
 
 	
-
-	/**
-	 * Adds common model attributes for all requests handled by this controller.
-	 * 
-	 * @param session the HTTP session to retrieve user information
-	 * @param model   the model to which attributes are added for the view
-	 */
 	@ModelAttribute
 	public void addModelAttribute(HttpSession session, Model model) {
 		String userRole = (String) session.getAttribute("userRole");
@@ -113,17 +92,6 @@ public class AdminCleintController {
 		
 	}
 
-	/**
-	 * Handles the submission of the admin registration form.
-	 * 
-	 * @param admin the AdminDto object populated from the registration form
-	 * @param model the model to add attributes to for the view
-	 * @return the name of the status page view, which indicates the result of the
-	 *         registration
-	 * @throws JsonMappingException    if there is an error mapping JSON to the
-	 *                                 AdminDto object
-	 * @throws JsonProcessingException if there is an error processing JSON
-	 */
 	@PostMapping("/registerAdmin")
 	public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
 			throws JsonMappingException, JsonProcessingException {
@@ -161,16 +129,6 @@ public class AdminCleintController {
 
 	}
 
-	/**
-	 * Handles admin login requests.
-	 * 
-	 * @param username           the username of the admin
-	 * @param password           the password of the admin
-	 * @param model              the model to add attributes to for the view
-	 * @param session            the HTTP session to store user information
-	 * @return a redirect to the admin page if login is successful, or back to the
-	 *         login page with an error message
-	 */
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
@@ -203,14 +161,6 @@ public class AdminCleintController {
 		return "redirect:/adminHomePage";  // Redirect back to the login page in case of failure
 	}
 
-	/**
-	 * Handles requests to view the admin profile.
-	 * 
-	 * @param username the username of the admin whose profile is to be viewed
-	 * @param model    the model to add attributes to for the view
-	 * @return the name of the admin profile view page, which is
-	 *         "viewAdminProfilePage"
-	 */
 	@GetMapping("/viewAdminProfile")
 	public String viewProfile(@RequestParam String username, Model model) {
 		

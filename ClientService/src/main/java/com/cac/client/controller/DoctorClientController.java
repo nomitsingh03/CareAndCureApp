@@ -3,6 +3,7 @@ package com.cac.client.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,10 @@ public class DoctorClientController {
 
     @Autowired
     private RestTemplate restTemplate;
+	
+	@Value("${base.url}")
+    private String baseUrl;
+
 
     @GetMapping("/doctorLoginForm")
 	public String doctorLoginForm(HttpSession session, Model model) {
@@ -63,7 +68,7 @@ public class DoctorClientController {
     @PostMapping("/doctorLogin")
 	public String doctorLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
-		String requestUrl = "http://localhost:8084/login";
+		String requestUrl = baseUrl+"/login";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
@@ -74,7 +79,7 @@ public class DoctorClientController {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
 			String message = response.getBody();
 			session.setAttribute("message", message);
-			// model.addAttribute("username", username);
+			model.addAttribute("username", username);
 			session.setAttribute("userRole", "doctor");
 			return "redirect:/doctorHomePage"; // Admin-specific page
 
@@ -94,7 +99,7 @@ public class DoctorClientController {
 	@GetMapping("/updatePatientByDoctor")
 	public String updatePatient(@RequestParam("id") int patientId, Model model) {
 		Patient patient = null;
-		String url = "http://localhost:8084/viewPatient/" + patientId;
+		String url = baseUrl+"/viewPatient/" + patientId;
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
 			patient = response.getBody();

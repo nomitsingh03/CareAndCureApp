@@ -64,6 +64,7 @@ public class PatientService {
 		oldDetail.setAddress(patient.getAddress());
 		oldDetail.setDateOfBirth(oldDetail.getDateOfBirth());
 		oldDetail.setAge(patient.getAge());
+		oldDetail.setInsuranceDetails(patient.getInsuranceDetails());
 		return patientRepository.save(oldDetail);
 	}
 
