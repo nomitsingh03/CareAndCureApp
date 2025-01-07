@@ -27,25 +27,28 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class DoctorClientController {
 
-    @Autowired
-    private RestTemplate restTemplate;
-	
+	@Autowired
+	private RestTemplate restTemplate;
+
 	@Value("${base.url}")
-    private String baseUrl;
+	private String baseUrl;
 
-
-    @GetMapping("/doctorLoginForm")
-	public String doctorLoginForm(HttpSession session, Model model) {
+	private void cleanUpSessionAttributes(HttpSession session, Model model) {
 		String errorMessage = (String) session.getAttribute("errorMessage");
 		if (errorMessage != null) {
 			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
+			session.removeAttribute("errorMessage");
 		}
 		String message = (String) session.getAttribute("message");
 		if (message != null) {
 			model.addAttribute("message", message);
-			session.removeAttribute(message);
+			session.removeAttribute("message");
 		}
+	}
+
+	@GetMapping("/doctorLoginForm")
+	public String doctorLoginForm(HttpSession session, Model model) {
+		cleanUpSessionAttributes(session, model);
 		String userRole = (String) session.getAttribute("userRole");
 		if (userRole != null) {
 			model.addAttribute("userRole", userRole);
@@ -53,22 +56,26 @@ public class DoctorClientController {
 		return "doctorLoginForm";
 	}
 
-
 	@GetMapping("/doctorHomePage")
 	public String doctorHomePage(HttpSession session, Model model) {
 		session.setAttribute("userRole", "doctor");
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
+		cleanUpSessionAttributes(session, model);
 		return "doctorHomePage";
 	}
 
-    @PostMapping("/doctorLogin")
+	@PostMapping("/doctorLogin")
 	public String doctorLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
-		String requestUrl = baseUrl+"/login";
+
+		if (username.isEmpty()) {
+			session.setAttribute("errorMessage", "Please enter your username.");
+			return "redirect:/doctorLoginForm";
+		}
+		if (password.isEmpty()) {
+			session.setAttribute("errorMessage", "Please enter your password.");
+			return "redirect:/doctorLoginForm";
+		}
+		String requestUrl = baseUrl + "/login";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
@@ -76,7 +83,8 @@ public class DoctorClientController {
 		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
 
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
+			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
+					String.class);
 			String message = response.getBody();
 			session.setAttribute("message", message);
 			model.addAttribute("username", username);
@@ -89,32 +97,35 @@ public class DoctorClientController {
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				session.setAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
-			
+
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
-		} 
-		return "redirect:/doctorLoginForm";  // Redirect back to the login page in case of failure
+		}
+		return "redirect:/doctorLoginForm"; // Redirect back to the login page in case of failure
 	}
 
-	@GetMapping("/updatePatientByDoctor")
-	public String updatePatient(@RequestParam("id") int patientId, Model model) {
-		Patient patient = null;
-		String url = baseUrl+"/viewPatient/" + patientId;
-		try {
-			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
-			patient = response.getBody();
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			model.addAttribute("errorMessage",
-					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
-			return "patientList";
-		}
-		if (patient != null) {
-			model.addAttribute("patient", patient);
-			return "updatePatientByDoctorPage";
-		} else {
-			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
-			return "patientList";
-		}
-	}
-    
+	// @GetMapping("/updatePatientByDoctor")
+	// public String updatePatient(@RequestParam("id") int patientId, Model model) {
+	// Patient patient = null;
+	// String url = baseUrl+"/viewPatient/" + patientId;
+	// try {
+	// ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET,
+	// null, Patient.class);
+	// patient = response.getBody();
+	// } catch (HttpClientErrorException | HttpServerErrorException e) {
+	// model.addAttribute("errorMessage",
+	// "Unable to fetch Patient with Id (" + patientId + "). Please try again
+	// later.");
+	// return "patientList";
+	// }
+	// if (patient != null) {
+	// model.addAttribute("patient", patient);
+	// return "updatePatientByDoctorPage";
+	// } else {
+	// model.addAttribute("errorMessage", "No Patient found with the given patientId
+	// : " + patientId);
+	// return "patientList";
+	// }
+	// }
+
 }

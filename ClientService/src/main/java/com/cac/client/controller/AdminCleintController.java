@@ -35,61 +35,51 @@ public class AdminCleintController {
 	@Autowired
 	public RestTemplate restTemplate;
 
-		@GetMapping("/adminRegistration")
+	@GetMapping("/adminRegistration")
 	public String adminRegistrationPage(Model model) {
 		model.addAttribute("admin", new AdminDto());
 		return "adminRegistration";
 	}
 
+	private void cleanUpSessionAttributes(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute("errorMessage");
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute("message");
+		}
+	}
+
 	@GetMapping("/adminLoginForm")
-	public String adminLoginForm() {
+	public String adminLoginForm(HttpSession session, Model model) {
+		cleanUpSessionAttributes(session, model);
 		return "adminLoginForm";
 	}
 
 	@GetMapping("/adminHomePage")
 	public String adminHomePage(HttpSession session, Model model) {
-		session.setAttribute("userRole", "patient");
-		String errorMessage = (String) session.getAttribute("errorMessage");
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
-		}
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
+
+		cleanUpSessionAttributes(session, model);
+		session.setAttribute("userRole", "admin");
 		return "adminHomePage";
 	}
-	
 
 	@GetMapping("/adminPage")
 	public String adminPage(HttpSession session, Model model) {
-		String errorMessage = (String) session.getAttribute("errorMessage");
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
-		}
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
+		cleanUpSessionAttributes(session, model);
 		return "adminPage";
 	}
 
-	
 	@ModelAttribute
 	public void addModelAttribute(HttpSession session, Model model) {
-		String userRole = (String) session.getAttribute("userRole");
-		if (userRole != null) {
-			model.addAttribute("userRole", userRole);
-		}
 		String username = (String) session.getAttribute("username");
 		if (username != null) {
 			model.addAttribute("username", username);
 		}
-		
 	}
 
 	@PostMapping("/registerAdmin")
@@ -132,6 +122,16 @@ public class AdminCleintController {
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
+
+		if (username.isEmpty()) {
+			session.setAttribute("errorMessage", "Please enter username");
+			return "redirect:/adminLoginForm";
+		}
+		if (password.isEmpty()) {
+			session.setAttribute("errorMessage", "Please enter password");
+			return "redirect:/adminLoginForm";
+		}
+
 		String requestUrl = "http://localhost:8084/login";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
@@ -140,7 +140,8 @@ public class AdminCleintController {
 		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
 
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
+			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
+					String.class);
 			String message = response.getBody();
 			session.setAttribute("message", message);
 			session.setAttribute("username", username);
@@ -157,13 +158,13 @@ public class AdminCleintController {
 				System.out.println(parseException.getMessage());
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
-		} 
-		return "redirect:/adminHomePage";  // Redirect back to the login page in case of failure
+		}
+		return "redirect:/adminLoginForm"; // Redirect back to the login page in case of failure
 	}
 
 	@GetMapping("/viewAdminProfile")
 	public String viewProfile(@RequestParam String username, Model model) {
-		
+
 		AdminDto dto = null;
 		String url = "http://localhost:8084/viewUserInfo/" + username;
 		try {
@@ -174,31 +175,34 @@ public class AdminCleintController {
 					AdminDto.class);
 			dto = response.getBody();
 			model.addAttribute("admin", dto);
-			
+
 		} catch (HttpStatusCodeException e) {
 			model.addAttribute("errorMessage", "Unable to fetch Admin details. Please try again later.");
 		}
 		return "viewAdminProfilePage";
 	}
 
-	@GetMapping("/updatePatientByAdmin")
-	public String updatePatient(@RequestParam("id") int patientId, Model model) {
-		Patient patient = null;
-		String url = "http://localhost:8084/viewPatient/" + patientId;
-		try {
-			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
-			patient = response.getBody();
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			model.addAttribute("errorMessage",
-					"Unable to fetch Patient with Id (" + patientId + "). Please try again later.");
-			return "patientList";
-		}
-		if (patient != null) {
-			model.addAttribute("patient", patient);
-			return "updatePatientByAdminPage";
-		} else {
-			model.addAttribute("errorMessage", "No Patient found with the given patientId : " + patientId);
-			return "patientList";
-		}
-	}
+	// @GetMapping("/updatePatientByAdmin")
+	// public String updatePatient(@RequestParam("id") int patientId, Model model) {
+	// Patient patient = null;
+	// String url = "http://localhost:8084/viewPatient/" + patientId;
+	// try {
+	// ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET,
+	// null, Patient.class);
+	// patient = response.getBody();
+	// } catch (HttpClientErrorException | HttpServerErrorException e) {
+	// model.addAttribute("errorMessage",
+	// "Unable to fetch Patient with Id (" + patientId + "). Please try again
+	// later.");
+	// return "patientList";
+	// }
+	// if (patient != null) {
+	// model.addAttribute("patient", patient);
+	// return "updatePatientByAdminPage";
+	// } else {
+	// model.addAttribute("errorMessage", "No Patient found with the given patientId
+	// : " + patientId);
+	// return "patientList";
+	// }
+	// }
 }
