@@ -41,7 +41,7 @@ public class PatientClientController {
 	private RestTemplate restTemplate;
 
 	@Value("${base.url}")
-    private String baseUrl;
+	private String baseUrl;
 
 	@ModelAttribute
 	public void addUserRoleToModel(HttpSession session, Model model) {
@@ -83,54 +83,52 @@ public class PatientClientController {
 	}
 
 	@GetMapping("/patientLoginForm")
-	public String patientLoginForm() {
+	public String patientLoginForm(HttpSession session, Model model) {
+		cleanUpSessionAttributes(session, model);
 		return "patientLoginForm";
+	}
+
+	private void cleanUpSessionAttributes(HttpSession session, Model model) {
+		String errorMessage = (String) session.getAttribute("errorMessage");
+		if (errorMessage != null) {
+			model.addAttribute("errorMessage", errorMessage);
+			session.removeAttribute("errorMessage");
+		}
+		String message = (String) session.getAttribute("message");
+		if (message != null) {
+			model.addAttribute("message", message);
+			session.removeAttribute("message");
+		}
 	}
 
 	@GetMapping("/patientHomePage")
 	public String patientHomePage(HttpSession session, Model model) {
 		session.setAttribute("userRole", "patient");
-		String errorMessage = (String) session.getAttribute("errorMessage");
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
-		}
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
+		cleanUpSessionAttributes(session, model);
 		return "patientHomePage";
 	}
 
 	@GetMapping("/patientPage")
-	public String patientPage(HttpSession session,Model model) {
-		String errorMessage = (String) session.getAttribute("errorMessage");
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
-		}
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
+	public String patientPage(HttpSession session, Model model) {
+		cleanUpSessionAttributes(session, model);
 		return "patientPage";
 	}
-	/*@GetMapping("/adminPage")
-	public String adminPage(HttpSession session, Model model) {
-		String errorMessage = (String) session.getAttribute("errorMessage");
-		if (errorMessage != null) {
-			model.addAttribute("errorMessage", errorMessage);
-			session.removeAttribute(errorMessage);
-		}
-		String message = (String) session.getAttribute("message");
-		if (message != null) {
-			model.addAttribute("message", message);
-			session.removeAttribute(message);
-		}
-		return "adminPage";
-	} */
+	/*
+	 * @GetMapping("/adminPage")
+	 * public String adminPage(HttpSession session, Model model) {
+	 * String errorMessage = (String) session.getAttribute("errorMessage");
+	 * if (errorMessage != null) {
+	 * model.addAttribute("errorMessage", errorMessage);
+	 * session.removeAttribute(errorMessage);
+	 * }
+	 * String message = (String) session.getAttribute("message");
+	 * if (message != null) {
+	 * model.addAttribute("message", message);
+	 * session.removeAttribute(message);
+	 * }
+	 * return "adminPage";
+	 * }
+	 */
 
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
@@ -142,7 +140,7 @@ public class PatientClientController {
 	public String submitPatientRegistration(@ModelAttribute("patient") Patient patient, Model model)
 			throws JsonMappingException, JsonProcessingException {
 		Patient patientObj = null;
-		String reuestUrl = baseUrl+"/registerPatient";
+		String reuestUrl = baseUrl + "/registerPatient";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
@@ -152,17 +150,17 @@ public class PatientClientController {
 					Patient.class);
 			patientObj = response.getBody();
 			model.addAttribute("patientId", patientObj.getPatientId());
-		model.addAttribute("patientName", patientObj.getPatientName());
-		model.addAttribute("message", "Registration Successfully.");
-		return "statuspage";
+			model.addAttribute("patientName", patientObj.getPatientName());
+			model.addAttribute("message", "Registration Successfully.");
+			return "statuspage";
 		} catch (HttpStatusCodeException e) {
-			if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode()==HttpStatus.CONFLICT) {
+			if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode() == HttpStatus.CONFLICT) {
 				// Parse validation errors from the response body
 				ObjectMapper objectMapper = new ObjectMapper();
 				try {
 					Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 					model.addAttribute("validationErrors", errors);
-					
+
 				} catch (Exception parseException) {
 					model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 				}
@@ -175,14 +173,13 @@ public class PatientClientController {
 			model.addAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
 			return "statusPage";
 		}
-		
 
 	}
 
 	@RequestMapping(value = "/findPatientByName", method = RequestMethod.GET)
 	public String findPatientByName(@RequestParam("name") String name, Model model) {
 		List<Patient> patientList = new ArrayList<>();
-		String url = baseUrl+"/viewPatientByName/" + name;
+		String url = baseUrl + "/viewPatientByName/" + name;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<List<Patient>> requestEntity = new HttpEntity<>(patientList, headers);
@@ -207,17 +204,17 @@ public class PatientClientController {
 		if (patientList != null && patientList.size() != 0) {
 			model.addAttribute("patientList", patientList);
 			// Add search type and value to the model
-            model.addAttribute("searchType", "name");
-            model.addAttribute("searchValue", name);
+			model.addAttribute("searchType", "name");
+			model.addAttribute("searchValue", name);
 			return "patientList";
-		} 
-			return "patientSearch";
+		}
+		return "patientSearch";
 	}
 
 	@RequestMapping(value = "/findPatientById", method = RequestMethod.GET)
 	public String findPatientById(@RequestParam("patientId") int patientId, Model model) {
 		Patient patient = null;
-		String url = baseUrl+"/viewPatient/" + patientId;
+		String url = baseUrl + "/viewPatient/" + patientId;
 
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(
@@ -246,7 +243,7 @@ public class PatientClientController {
 			} catch (Exception parseException) {
 				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
-		} catch(Exception e){
+		} catch (Exception e) {
 			model.addAttribute("errorMessage", "Some Internal Error Occur ");
 		}
 		return "patientSearch";
@@ -255,7 +252,7 @@ public class PatientClientController {
 	@GetMapping("/viewPatientProfile")
 	public String viewProfile(@RequestParam int patientId, Model model) {
 		Patient patient = null;
-		String url = baseUrl+"/viewPatient/" + patientId;
+		String url = baseUrl + "/viewPatient/" + patientId;
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(
 					url,
@@ -272,11 +269,10 @@ public class PatientClientController {
 		}
 	}
 
-
 	@GetMapping("/updatePatient")
 	public String updatePatient(@RequestParam("id") int patientId, Model model) {
 		Patient patient = null;
-		String url = baseUrl+"/viewPatient/" + patientId;
+		String url = baseUrl + "/viewPatient/" + patientId;
 		try {
 			ResponseEntity<Patient> response = restTemplate.exchange(url, HttpMethod.GET, null, Patient.class);
 			patient = response.getBody();
@@ -298,10 +294,10 @@ public class PatientClientController {
 	public String submitUpdatePatient(@ModelAttribute("patient") Patient patient, Model model)
 			throws JsonMappingException, JsonProcessingException {
 		Patient patientObj = null;
-		String reuestUrl = baseUrl+"/updatePatient/" + patient.getPatientId();
+		String reuestUrl = baseUrl + "/updatePatient/" + patient.getPatientId();
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
-				
+
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
 
 		try {
@@ -311,18 +307,18 @@ public class PatientClientController {
 		} catch (HttpClientErrorException e) {
 
 			ObjectMapper objectMapper = new ObjectMapper();
-					try {
-						Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-					model.addAttribute("validationErrors", errors);
-					} catch (Exception ex) {
-						JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
-						String errorMessage = rootNode.path("message").asText();
-						model.addAttribute("errorMessage", errorMessage);
-					}
-			
+			try {
+				Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				model.addAttribute("validationErrors", errors);
+			} catch (Exception ex) {
+				JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
+				String errorMessage = rootNode.path("message").asText();
+				model.addAttribute("errorMessage", errorMessage);
+			}
+
 			model.addAttribute("patient", patient);
 			return "updatePatient";
-		} 
+		}
 
 		model.addAttribute("patient", patientObj);
 		model.addAttribute("succMessage", " Patient updated Successfully!");
@@ -332,11 +328,11 @@ public class PatientClientController {
 
 	@GetMapping("/deactivatePatient")
 	public String deactivatePatient(@RequestParam("patientId") int patientId,
-	@RequestParam(value = "searchType", required = false) String searchType,
-	@RequestParam(value = "searchValue", required = false) String searchValue,
-	Model model) {
+			@RequestParam(value = "searchType", required = false) String searchType,
+			@RequestParam(value = "searchValue", required = false) String searchValue,
+			Model model) {
 		Patient patient = null;
-		String url = baseUrl+"/deactivatePatient/" + patientId;
+		String url = baseUrl + "/deactivatePatient/" + patientId;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<Patient> requestEntity = new HttpEntity<>(patient, headers);
@@ -350,13 +346,13 @@ public class PatientClientController {
 			} else {
 				model.addAttribute("errorMessage", "Patient with ID (" + patientId + ") deactivated successfully.");
 			}
-	
+
 			// Redirect based on the previous search type
 			if ("id".equalsIgnoreCase(searchType)) {
 				return findPatientById(patientId, model);
 			} else if ("name".equalsIgnoreCase(searchType) && searchValue != null) {
 				return findPatientByName(searchValue, model);
-			} else if("viewProfile".equals(searchType)){
+			} else if ("viewProfile".equals(searchType)) {
 				return viewProfile(patientId, model);
 			} else {
 				// Default behavior: load all patients
@@ -369,11 +365,10 @@ public class PatientClientController {
 		}
 	}
 
-	
 	@RequestMapping(value = "/viewAllPatient", method = RequestMethod.GET)
 	public String getAllPatient(Model model) {
 		List<Patient> patientList = new ArrayList<>();
-		String url = baseUrl+"/viewAllPatient";
+		String url = baseUrl + "/viewAllPatient";
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json");
 		HttpEntity<List<Patient>> requestEntity = new HttpEntity<>(patientList, headers);
@@ -399,13 +394,16 @@ public class PatientClientController {
 		}
 	}
 
-
 	@PostMapping("/patientLogin")
 	public String patientLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
-		if (username.isEmpty() || password.isEmpty()) {
-			model.addAttribute("errorMessage", "Please enter Patient Id and Password.");
-			return "patientHomePage";
+		if (username.isEmpty()) {
+			session.setAttribute("errorMessage", "Please enter Patient Id");
+			return "redirect:/patientLoginForm";
+		}
+		if (password.isEmpty()) {
+			session.setAttribute("errorMessage", "Please enter name as password");
+			return "redirect:/patientLoginForm";
 		}
 		LoginDetails details = new LoginDetails(username, password, "patient");
 
@@ -414,10 +412,11 @@ public class PatientClientController {
 
 		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
 
-		String requestUrl = baseUrl+"/login";
+		String requestUrl = baseUrl + "/login";
 
 		try {
-			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, String.class);
+			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
+					String.class);
 			String message = response.getBody();
 			session.setAttribute("message", message);
 			session.setAttribute("patientId", Integer.parseInt(username));
@@ -429,14 +428,14 @@ public class PatientClientController {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-				
+
 				session.setAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
-				
+
 				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
 		}
-		return "redirect:/patientHomePage"; // Redirect back to the login page in case of failure
+		return "redirect:/patientLoginForm"; // Redirect back to the login page in case of failure
 	}
 
 }
