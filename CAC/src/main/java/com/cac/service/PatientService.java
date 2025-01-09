@@ -20,7 +20,7 @@ public class PatientService {
 	private UserService userService;
 
 	@Autowired
-    private EmailService emailService;
+	private EmailService emailService;
 	
 	public Patient createPatient(Patient patient) {
 		patient.setActive(true);
@@ -29,12 +29,12 @@ public class PatientService {
 		userService.createUser(userInfo);
 		
 		String subject = "Welcome to Care & Cure";
-        String message = "Dear " + savedPatient.getPatientName() + ",\n\n" +
-                "Thank you for registering with Care & Cure. Your patient ID is: " + savedPatient.getPatientId() + "\n\n" +
-                "Best regards,\n" +
-                "Care & Cure Team";
+		String message = "Dear " + savedPatient.getPatientName() + ",\n\n" +
+				"Thank you for registering with Care & Cure. Your patient ID is: " + savedPatient.getPatientId() + "\n\n" +
+				"Best regards,\n" +
+				"Care & Cure Team";
 
-        emailService.sendEmail(savedPatient.getEmailId(), subject, message);
+		emailService.sendEmail(savedPatient.getEmailId(), subject, message);
 		return savedPatient;
 	}
 	
@@ -76,13 +76,33 @@ public class PatientService {
 		oldDetail.setDateOfBirth(oldDetail.getDateOfBirth());
 		oldDetail.setAge(patient.getAge());
 		oldDetail.setInsuranceDetails(patient.getInsuranceDetails());
-		return patientRepository.save(oldDetail);
+		Patient updatedPatient = patientRepository.save(oldDetail);
+
+		String subject = "Your Care & Cure Profile Updated";
+		String message = "Dear " + updatedPatient.getPatientName() + ",\n\n" +
+				"Your profile has been successfully updated.\n\n" +
+				"Best regards,\n" +
+				"Care & Cure Team";
+
+		emailService.sendEmail(updatedPatient.getEmailId(), subject, message);
+
+		return updatedPatient;
 	}
 
 	public Patient changeActive(int id) throws UserNotFoundException {
 		Patient patient = patientRepository.findById(id).orElseThrow(()->new UserNotFoundException("Patient not found with Id: "+id));
 		patient.setActive(!patient.isActive());
-		return patientRepository.save(patient);
+		Patient updatedPatient = patientRepository.save(patient);
+
+		String subject = "Your Care & Cure Account Status Changed";
+		String message = "Dear " + updatedPatient.getPatientName() + ",\n\n" +
+				"Your account has been " + (updatedPatient.isActive() ? "activated" : "deactivated") + ".\n\n" +
+				"Best regards,\n" +
+				"Care & Cure Team";
+
+		emailService.sendEmail(updatedPatient.getEmailId(), subject, message);
+
+		return updatedPatient;
 	}
 
 }
