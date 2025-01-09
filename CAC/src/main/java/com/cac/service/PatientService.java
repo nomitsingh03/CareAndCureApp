@@ -18,12 +18,23 @@ public class PatientService {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+    private EmailService emailService;
 	
 	public Patient createPatient(Patient patient) {
 		patient.setActive(true);
 		Patient savedPatient = patientRepository.save(patient);
 		UserInfo userInfo = new UserInfo(""+savedPatient.getPatientId(), patient.getPatientName(), "patient");
 		userService.createUser(userInfo);
+		
+		String subject = "Welcome to Care & Cure";
+        String message = "Dear " + savedPatient.getPatientName() + ",\n\n" +
+                "Thank you for registering with Care & Cure. Your patient ID is: " + savedPatient.getPatientId() + "\n\n" +
+                "Best regards,\n" +
+                "Care & Cure Team";
+
+        emailService.sendEmail(savedPatient.getEmailId(), subject, message);
 		return savedPatient;
 	}
 	
