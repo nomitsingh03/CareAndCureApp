@@ -33,8 +33,6 @@ This project is developed using **Java Full-Stack Technology**, leveraging robus
 
 ### Additional Tools
 - **Maven**: Build and dependency management.
-- **Mailtrap**: Email validation and notification service.
-- **Lombok**: Reduce boilerplate code for models.
 - **Git**: Version control.
 
 ---
