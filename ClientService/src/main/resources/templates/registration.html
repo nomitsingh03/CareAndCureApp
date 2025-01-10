@@ -359,6 +359,13 @@
                 th:field="*{dateOfBirth}"
                 placeholder="Date"
               />
+              <!-- [[${patient.dateOfBirth}]] -->
+              <div
+              class="error-message"
+              th:if="${validationErrors != null and validationErrors.containsKey('dateOfBirth')}"
+            >
+              <p th:text="${validationErrors['dateOfBirth']}"></p>
+            </div>
             </td>
           </tr>
 
