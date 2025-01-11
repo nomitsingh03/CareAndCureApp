@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.UniqueElements;
 
+import com.cac.annotations.ValidDateOfBirth;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+@ValidDateOfBirth
 @Entity
 public class Patient {
 	
