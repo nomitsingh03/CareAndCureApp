@@ -43,7 +43,7 @@ public class DateOfBirthAgeValidator implements ConstraintValidator<ValidDateOfB
 
         if (calculatedAge != age) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Age does not match the date of birth")
+            context.buildConstraintViolationWithTemplate("Age mismatched with date of birth")
                    .addConstraintViolation();
             return false;
         }
