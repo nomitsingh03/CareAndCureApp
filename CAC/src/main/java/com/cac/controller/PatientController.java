@@ -16,6 +16,7 @@ import com.cac.exception.UserNotFoundException;
 import com.cac.model.Patient;
 import com.cac.service.PatientService;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -25,7 +26,7 @@ public class PatientController {
 	private PatientService patientService;
 	
 	@PostMapping("/registerPatient") 
-	public ResponseEntity<Patient> registerPatient(@Valid @RequestBody Patient patient){
+	public ResponseEntity<Patient> registerPatient(@Valid @RequestBody Patient patient) throws MessagingException{
 		return new ResponseEntity<Patient>(patientService.createPatient(patient), HttpStatus.CREATED);
 	}
 	

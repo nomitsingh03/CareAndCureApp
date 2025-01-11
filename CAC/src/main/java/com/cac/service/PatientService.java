@@ -10,6 +10,9 @@ import com.cac.model.Patient;
 import com.cac.model.UserInfo;
 import com.cac.repository.PatientRepository;
 
+import jakarta.mail.MessagingException;
+
+
 @Service
 public class PatientService {
 	
@@ -22,7 +25,7 @@ public class PatientService {
 	@Autowired
 	private EmailService emailService;
 
-	public Patient createPatient(Patient patient) {
+	public Patient createPatient(Patient patient) throws MessagingException {
 		// Activate the new patient
 		patient.setActive(true);
 		// Save patient information to the repository
@@ -39,27 +42,33 @@ public class PatientService {
 
 		return savedPatient;
 	}
-	private void sendWelcomeEmail(Patient savedPatient) {
+	private void sendWelcomeEmail(Patient savedPatient) throws MessagingException {
 		String subject = "Welcome to Care & Cure";
 		String message = String.format(
-				"Dear %s,\n\n" +
-						"Thank you for registering with Care & Cure. Your patient ID is: %d.\n\n" +
-						"ABOUT CARE & CURE HOSPITAL\n" +
-						"Care & Cure is dedicated to improving health and well-being with compassionate, personalized healthcare services.\n\n" +
-						"OUR MISSION\n" +
-						"To provide accessible, high-quality medical care with a focus on excellence, patient-centered treatment, and innovation.\n\n" +
-						"OUR VISION\n" +
-						"To become a global leader in healthcare, known for trust, quality, and advancing medical research and education.\n\n" +
-						"OUR FACILITIES\n" +
-						"- 24/7 Emergency and Trauma Care\n" +
-						"- State-of-the-art Diagnostic and Laboratory Services\n" +
-						"- Advanced Surgical and Inpatient Facilities\n" +
-						"- Specialized Clinics for Cardiology, Orthopedics, and more\n" +
-						"- Preventive Health Programs and Wellness Services\n\n" +
-						"For any assistance or inquiries, feel free to reach out to us at: support@careandcure.com\n\n" +
-						"Our team of highly skilled professionals is dedicated to providing you with world-class healthcare. We are honored to be part of your health journey.\n\n" +
-						"Best regards,\n" +
-						"Care & Cure Team",
+				"<html>" +
+        "<body>" +
+        "<h1>Welcome to Care & Cure</h1>" +
+        "<p>Dear <b>%s</b>,</p>" +
+        "<p>Thank you for registering with Care & Cure. Your patient ID is: <b>%d</b>.</p>" +
+        "<h3>ABOUT CARE & CURE HOSPITAL</h3>" +
+        "<p>Care & Cure is dedicated to improving health and well-being with compassionate, personalized healthcare services.</p>" +
+        "<h3>OUR MISSION</h3>" +
+        "<p>To provide accessible, high-quality medical care with a focus on excellence, patient-centered treatment, and innovation.</p>" +
+        "<h3>OUR VISION</h3>" +
+        "<p>To become a global leader in healthcare, known for trust, quality, and advancing medical research and education.</p>" +
+        "<h3>OUR FACILITIES</h3>" +
+        "<ul>" +
+        "  <li>24/7 Emergency and Trauma Care</li>" +
+        "  <li>State-of-the-art Diagnostic and Laboratory Services</li>" +
+        "  <li>Advanced Surgical and Inpatient Facilities</li>" +
+        "  <li>Specialized Clinics for Cardiology, Orthopedics, and more</li>" +
+        "  <li>Preventive Health Programs and Wellness Services</li>" +
+        "</ul>" +
+        "<p>For any assistance or inquiries, feel free to reach out to us at: <a href='mailto:support@careandcure.com'>support@careandcure.com</a></p>" +
+        "<p>Our team of highly skilled professionals is dedicated to providing you with world-class healthcare. We are honored to be part of your health journey.</p>" +
+        "<p>Best regards,<br>Care & Cure Team</p>" +
+        "</body>" +
+        "</html>",
 				savedPatient.getPatientName(), savedPatient.getPatientId()
 		);
 
@@ -94,7 +103,7 @@ public class PatientService {
 		return patientRepository.findByIsActive(true);
 	}
 
-	public Patient updatePatient(int id, Patient patient) throws UserNotFoundException {
+	public Patient updatePatient(int id, Patient patient) throws UserNotFoundException, MessagingException {
 		Patient oldDetail = patientRepository.findById(id)
 				.orElseThrow(() -> new UserNotFoundException("Patient not found with Id: " + id));
 
@@ -176,7 +185,7 @@ public class PatientService {
 	}
 
 
-	public Patient changeActive(int id) throws UserNotFoundException {
+	public Patient changeActive(int id) throws UserNotFoundException, MessagingException {
 		Patient patient = patientRepository.findById(id)
 				.orElseThrow(() -> new UserNotFoundException("Patient not found with Id: " + id));
 
