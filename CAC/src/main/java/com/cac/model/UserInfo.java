@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -15,15 +16,18 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(unique = true, nullable = false)
     @NotBlank(message = "Username required")
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @NotBlank(message = "Password is mandatory")
     @Column(nullable = false)
     private String password;
 
     private String name;
+
+    @Email(message = "Enter valid email", regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$")
+	// @Column(unique = true)
+	private String emailId;
 
     @Column(nullable = false)
     private String role;
@@ -36,6 +40,13 @@ public class UserInfo {
         this.username = username;
         this.password = password;
         this.role = role;
+    }
+
+    public UserInfo(String username, String password, String role, String email){
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.emailId=email;
     }
     
     public String getUsername() {
@@ -65,6 +76,14 @@ public class UserInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setEmailId(String email){
+        this.emailId = email;
+    }
+
+    public String getEmailId(){
+        return this.emailId;
     }
     
 }

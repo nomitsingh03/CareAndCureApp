@@ -26,7 +26,7 @@ public class PatientController {
 	private PatientService patientService;
 	
 	@PostMapping("/registerPatient") 
-	public ResponseEntity<Patient> registerPatient(@Valid @RequestBody Patient patient) throws MessagingException{
+	public ResponseEntity<Patient> registerPatient(@Valid @RequestBody Patient patient){
 		return new ResponseEntity<Patient>(patientService.createPatient(patient), HttpStatus.CREATED);
 	}
 	

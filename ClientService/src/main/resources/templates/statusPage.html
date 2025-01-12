@@ -144,8 +144,7 @@
 
 		<!-- Conditional Display with Styled Messages -->
 		<div>
-			<!-- Error Message -->
-			<p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+			
 
 			<!-- Field-specific validation errors -->
 			<div th:if="${validationErrors}" style="color: red;">
@@ -157,6 +156,9 @@
 				</ul>
 			</div>
 
+			<!-- Error Message -->
+			<p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+			<div th:unless="${errorMessage}">
 			<!-- Patient Success Message -->
 			<div th:if="${message}" class="details-container">
 				<p class="success-message">[[${message}]]</p>
@@ -175,10 +177,12 @@
 					<strong>Admin Username:</strong> [[${username}]]
 				</div>
 				<div>
-					<strong>Password:</strong> [[${password}]]
+					<strong>Email:</strong> [[${email}]]
 				</div>
 			</div>
 		</div>
+		</div>
+		
 
 		<!-- Navigation Buttons -->
 		<div class="button-container">

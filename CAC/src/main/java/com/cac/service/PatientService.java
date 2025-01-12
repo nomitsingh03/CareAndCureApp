@@ -3,6 +3,7 @@ package com.cac.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 
 import com.cac.exception.UserNotFoundException;
@@ -25,7 +26,7 @@ public class PatientService {
 	@Autowired
 	private EmailService emailService;
 
-	public Patient createPatient(Patient patient) throws MessagingException {
+	public Patient createPatient(Patient patient) {
 		// Activate the new patient
 		patient.setActive(true);
 		// Save patient information to the repository
@@ -42,7 +43,7 @@ public class PatientService {
 
 		return savedPatient;
 	}
-	private void sendWelcomeEmail(Patient savedPatient) throws MessagingException {
+	private void sendWelcomeEmail(Patient savedPatient) {
 		String subject = "Welcome to Care & Cure";
 		String message = String.format(
 				"<html>" +
@@ -72,7 +73,11 @@ public class PatientService {
 				savedPatient.getPatientName(), savedPatient.getPatientId()
 		);
 
+		try{
 		emailService.sendEmail(savedPatient.getEmailId(), subject, message);
+		}catch(MessagingException | MailSendException e){
+			throw new MailSendException("Failed to send Message");
+		}
 	}
 
 
@@ -160,6 +165,17 @@ public class PatientService {
 			updateDetails.append("- Insurance details updated.\n");
 			isUpdated = true;
 		}
+		if (!oldDetail.getGender().equals(patient.getGender())) {
+			oldDetail.setGender(patient.getGender());
+			updateDetails.append("- Gender details updated.\n");
+			isUpdated = true;
+		}
+		if (!oldDetail.getDateOfBirth().equals(patient.getDateOfBirth())) {
+			oldDetail.setDateOfBirth(patient.getDateOfBirth());
+			updateDetails.append("- DOB details updated.\n");
+			isUpdated = true;
+		}
+
 
 		if (isUpdated) {
 			Patient updatedPatient = patientRepository.save(oldDetail);

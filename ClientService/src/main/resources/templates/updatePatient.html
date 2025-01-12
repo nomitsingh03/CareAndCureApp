@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Patient</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <style>
         /* General Reset */
         * {
@@ -208,7 +210,8 @@
                 <tr>
                     <td><label for="id">Patient ID:</label></td>
                     <td>
-                        <input type="text" id="id" th:field="*{patientId}" title="You can't change patientID" readonly />
+                        <input type="text" id="id" th:field="*{patientId}" title="You can't change patientID"
+                            readonly />
                     </td>
                 </tr>
                 <!-- Patient Name -->
@@ -265,11 +268,32 @@
                     </td>
                 </tr>
 
-                <!-- Gender (hidden) -->
-                <input type="hidden" th:field="*{gender}" />
+                <!-- Gender -->
+                <tr>
+                    <td><label>Gender:</label></td>
+                    <td>
+                        <input type="radio" id="male" name="gender" value="Male" th:field="*{gender}" />
+                        <label for="male">Male</label>
+                        <input type="radio" id="female" name="gender" value="Female" th:field="*{gender}" />
+                        <label for="female">Female</label>
+                        <div class="error-message"
+                            th:if="${validationErrors != null and validationErrors.containsKey('gender')}">
+                            <p th:text="${validationErrors['gender']}"></p>
+                        </div>
+                    </td>
 
-                <!-- Date of Birth (hidden) -->
-                <input type="hidden" th:field="*{dateOfBirth}" />
+                    <!-- Date of Birth -->
+                <tr>
+                    <td><label for="dob">Date of Birth:</label></td>
+                    <td>
+                        <input type="date" id="dob" th:field="*{dateOfBirth}"/>
+                        <input type="hidden" id="patientDob" th:value="${#temporals.format(patient.dateOfBirth, 'yyyy-MM-dd')}" />
+                        <div class="error-message"
+                            th:if="${validationErrors != null and validationErrors.containsKey('dateOfBirth')}">
+                            <p th:text="${validationErrors['dateOfBirth']}"></p>
+                        </div>
+                    </td>
+                </tr>
 
                 <!-- Address -->
 
@@ -354,6 +378,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Include Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script> 
+   let dateOfBirth = document.getElementById('patientDob').value || "2000-01-01"; // Log the date for debugging console.log(dateOfBirth);
+
+        flatpickr('#dob', { 
+            dateFormat: 'Y-m-d', 
+            altInput: true, 
+            altFormat: 'd/m/Y', 
+            maxDate: 'today', 
+            minDate: '1900-01-01', 
+            defaultDate: dateOfBirth }); 
+</script>
+
 </body>
 
 </html>

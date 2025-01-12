@@ -12,6 +12,10 @@ import com.cac.exception.UserNotFoundException;
 import com.cac.model.LoginDetails;
 import com.cac.model.UserInfo;
 import com.cac.service.UserService;
+
+import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -22,7 +26,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/userRegister")
-    public ResponseEntity<UserInfo> userLogin(@RequestBody UserInfo user) {
+    public ResponseEntity<UserInfo> userLogin(@Valid @RequestBody UserInfo user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
