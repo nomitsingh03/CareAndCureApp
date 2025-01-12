@@ -1,6 +1,9 @@
 package com.cac.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 
 import com.cac.exception.UserNotFoundException;
@@ -8,15 +11,40 @@ import com.cac.model.LoginDetails;
 import com.cac.model.UserInfo;
 import com.cac.repository.UserRepository;
 
+import jakarta.mail.MessagingException;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     public UserInfo createUser(UserInfo userInfo) {
         userInfo.setRole(userInfo.getRole().toUpperCase());
+        if(userInfo.getRole().equals("ADMIN")) return createAdmin(userInfo);
         return userRepository.save(userInfo);
+    }
+
+    public UserInfo createAdmin(UserInfo userInfo) {
+        // userInfo.setRole(userInfo.getRole().toUpperCase());
+
+        UserInfo savedAdmin = userRepository.save(userInfo);
+
+        String subject = "Welcome to Care & Cure";
+        String message = String.format("Your username : " + savedAdmin.getUsername() + "</br>"+ "and password : "+ savedAdmin.getPassword());
+
+        try{
+           emailService.sendEmail(savedAdmin.getEmailId(), subject, message);
+        } catch(Exception e){
+            userRepository.delete(savedAdmin);
+            throw new MailSendException("Failed to send Email");
+
+        }
+
+        return savedAdmin;
     }
 
     public UserInfo getUserByUsername(String username) throws UserNotFoundException {

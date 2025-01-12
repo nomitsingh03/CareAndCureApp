@@ -41,7 +41,7 @@ public class DateOfBirthAgeValidator implements ConstraintValidator<ValidDateOfB
         // Calculate age from dateOfBirth
         int calculatedAge = currentDate.getYear()-dateOfBirth.getYear();
 
-        if (calculatedAge != age) {
+        if (calculatedAge < age) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate("Age mismatched with date of birth")
                    .addConstraintViolation();

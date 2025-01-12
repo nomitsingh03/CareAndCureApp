@@ -6,9 +6,12 @@ import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSendException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import jakarta.mail.MessagingException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,6 +47,18 @@ public class GlobalExceptionHandler {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<String> handleMailSendException(MailSendException ex) {
+        String errorMes = "Some internal error occur! .Try again later";
+        return new ResponseEntity<>(errorMes, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<String> handleMailSendException(MessagingException ex) {
+        String errorMes = "Some internal error occur! .Try again later";
+        return new ResponseEntity<>(errorMes, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
     @ExceptionHandler(Exception.class)

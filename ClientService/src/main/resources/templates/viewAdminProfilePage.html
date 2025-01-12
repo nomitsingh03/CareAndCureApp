@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"></html>>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,6 +40,7 @@
                 opacity: 0;
                 transform: translateY(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -131,23 +132,27 @@
         }
     </style>
 </head>
+
 <body>
     <div class="profile-container">
-        
-        <!-- Profile Header -->
+
+         <!-- Profile Header -->
         <div class="profile-header">
             <h1>Admin Profile</h1>
         </div>
         <p class="error-message" th:if="${errorMessage}" th:text="${errorMessage}"></p>
-       
+
          <!-- Profile Details -->
-        <div class="profile-details">    
+
+        <div class="profile-details">
             <div><strong>Name:</strong> [[${admin.name}]]</div>
             <div><strong>Username:</strong> [[${admin.username}]]</div>
-        </div>   
-        <div class="button-container">
-            <button class="back-button" onclick="window.location.href='/adminPage'">Back</button>
+            <div><strong>Email:</strong> [[${admin.emailId}]]</div>
+            
         </div>
+        <div class="button-container"> <button class="back-button"
+                onclick="window.location.href='/adminPage'">Back</button> </div>
     </div>
 </body>
+
 </html>

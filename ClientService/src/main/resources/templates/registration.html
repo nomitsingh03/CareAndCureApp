@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Patient Registration Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
     <style>
       /* Reset and Base Styling */
       * {
@@ -357,9 +358,9 @@
                 type="date"
                 id="dob"
                 th:field="*{dateOfBirth}"
-                placeholder="Date"
+                placeholder="Select D.O.B."
               />
-              <!-- [[${patient.dateOfBirth}]] -->
+              <input type="hidden" id="patientDob" th:value="${#temporals.format(patient.dateOfBirth, 'yyyy-MM-dd')}">
               <div
               class="error-message"
               th:if="${validationErrors != null and validationErrors.containsKey('dateOfBirth')}"
@@ -488,5 +489,19 @@
         
       </div>
     </div>
+
+    <!-- Include Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script> 
+   let dateOfBirth = document.getElementById('patientDob').value || "0000-00-00"; // Log the date for debugging console.log(dateOfBirth);
+
+        flatpickr('#dob', { 
+            dateFormat: 'Y-m-d', 
+            altInput: true, 
+            altFormat: 'd/m/Y', 
+            maxDate: 'today', 
+            minDate: '1900-01-01', 
+            defaultDate: dateOfBirth }); 
+</script>
   </body>
 </html>
