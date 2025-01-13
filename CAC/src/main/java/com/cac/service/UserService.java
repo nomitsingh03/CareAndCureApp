@@ -1,19 +1,12 @@
 package com.cac.service;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
 
 import com.cac.exception.UserNotFoundException;
 import com.cac.model.LoginDetails;
-import com.cac.model.Patient;
 import com.cac.model.UserInfo;
-import com.cac.repository.PatientRepository;
 import com.cac.repository.UserRepository;
-
-import jakarta.mail.MessagingException;
 
 @Service
 public class UserService {
