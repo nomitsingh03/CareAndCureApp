@@ -23,7 +23,7 @@ public class AdminService {
     @Autowired
     private EmailService emailService;
 
-    private void sendWelcomeEmail(AdminInfo admin) throws MessagingException {
+    private void sendWelcomeEmail(AdminInfo admin) {
         String subject = "Welcome to Care & Cure – Your Admin Account Details";
         String message = String.format(        "<html>" +
                         "<body>" +

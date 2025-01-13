@@ -230,8 +230,9 @@ public class AdminCleintController {
 	}
 
 	@GetMapping("/viewAdminProfile")
-	public String viewProfile(@RequestParam String username, Model model) {
-
+	public String viewProfile(HttpSession session, Model model) {
+		String username = (String)session.getAttribute("username");
+		if(username==null) return "redirect:/adminLoginForm";
 		AdminDto dto = null;
 		String url = "http://localhost:8084/viewAdminInfo/" + username;
 		try {
