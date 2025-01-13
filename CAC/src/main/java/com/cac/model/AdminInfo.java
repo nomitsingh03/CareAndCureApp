@@ -1,6 +1,5 @@
 package com.cac.model;
 
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,9 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Entity
-public class UserInfo {
+public class AdminInfo {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,47 +23,30 @@ public class UserInfo {
     @Column(nullable = false)
     private String password;
 
+    @NotBlank(message = "enter name")
     private String name;
 
-    @Column(nullable = false)
-    private String role;
+    @Email(message = "Enter valid email", regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,}$")
+	@Column(unique = true)
+	private String email;
 
-    public UserInfo(){
-        
-    }
+    // // @NotBlank(message = "select gender.")
+    // private String gender;
 
-    public UserInfo(String username, String password, String role){
-        this.username = username;
-        this.password = password;
-        this.role = role;
-    }
-
-    public UserInfo(String username, String password, String role, String name){
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.name=name;
-    }
-    
     public String getUsername() {
         return username;
     }
+
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
-    }
-    
-    public void setRole(String role) {
-        this.role = role;
-    }
-    
-    public String getRole(){
-        return this.role;
     }
 
     public String getName() {
@@ -73,5 +56,21 @@ public class UserInfo {
     public void setName(String name) {
         this.name = name;
     }
-    
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // public String getGender() {
+    //     return gender;
+    // }
+
+    // public void setGender(String gender) {
+    //     this.gender = gender;
+    // }
+
 }

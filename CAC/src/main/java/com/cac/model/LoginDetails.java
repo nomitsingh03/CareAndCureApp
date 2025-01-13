@@ -6,6 +6,14 @@ public class LoginDetails {
     private String password;
     private String loginType;
 
+    
+
+    public LoginDetails(String username, String password, String loginType) {
+        this.username = username;
+        this.password = password;
+        this.loginType = loginType;
+    }
+
     public String getUsername() {
         return username;
     }

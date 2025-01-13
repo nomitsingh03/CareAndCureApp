@@ -130,17 +130,19 @@ public class AdminCleintController {
 
 	// }
 
+	public String generatePassword(){
+        return UUID.randomUUID().toString().substring(0,8);
+    }
+
 	@PostMapping("/registerAdmin")
 public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
         throws JsonMappingException, JsonProcessingException {
     AdminDto adminObj = null;
-    String requestUrl = "http://localhost:8084/userRegister"; // URL for the admin registration service
+	admin.setPassword(generatePassword());
+    String requestUrl = "http://localhost:8084/registerAdmin"; // URL for the admin registration service
     HttpHeaders headers = new HttpHeaders();
     headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
-    // Create an HTTP entity with the admin data and headers
-    admin.setRole("admin");
-	admin.setPassword(generatePassword());
     HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
 
     try {
@@ -150,7 +152,7 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
 
         // Add admin details to the model for display on the status page
         model.addAttribute("username", admin.getUsername());
-        model.addAttribute("email", admin.getEmailId());
+        model.addAttribute("email", admin.getEmail());
         model.addAttribute("admin", true);
         return "statuspage";
 
@@ -159,13 +161,9 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
         if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode() == HttpStatus.CONFLICT) {
             // Parse validation errors from the response body
             ObjectMapper objectMapper = new ObjectMapper();
-            try {
                 Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
                 model.addAttribute("validationErrors", errors);
 
-            } catch (Exception parseException) {
-                model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
-            }
             return "adminRegistration";
         } else if (e.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
                 model.addAttribute("errorMessage", e.getResponseBodyAsString());
@@ -179,11 +177,6 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
         return "statusPage";
     }
 }
-
-	private String generatePassword(){
-        return UUID.randomUUID().toString().substring(0, 8);
-    }
-
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
@@ -197,12 +190,12 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
 			return "redirect:/adminLoginForm";
 		}
 
-		String requestUrl = "http://localhost:8084/login";
+		String requestUrl = "http://localhost:8084/loginAdmin?username="+username+"&password="+password;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
-		LoginDetails details = new LoginDetails(username, password, "admin");
-		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
+		// LoginDetails details = new LoginDetails(username, password, "admin");
+		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(null, headers);
 
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
@@ -214,17 +207,18 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
 			return "redirect:/adminPage"; // Admin-specific page
 
 		} catch (HttpStatusCodeException e) {
+			ObjectMapper objectMapper = new ObjectMapper();
+			
 			try {
-				ObjectMapper objectMapper = new ObjectMapper();
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-				System.out.println(errorMessage.get("error"));
 				session.setAttribute("errorMessage", errorMessage.get("error"));
+				return "redirect:/adminLoginForm";
 			} catch (Exception parseException) {
-				System.out.println(parseException.getMessage());
-				session.setAttribute("errorMessage", "An error occurred while parsing the validation errors.");
+				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
 			}
+			model.addAttribute("errorMessage", e.getResponseBodyAsString());
 		}
-		return "redirect:/adminLoginForm"; // Redirect back to the login page in case of failure
+		return "statuspage";
 	}
 
 	@GetMapping("/viewAdminProfile")

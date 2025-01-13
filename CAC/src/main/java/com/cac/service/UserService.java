@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.cac.exception.UserNotFoundException;
 import com.cac.model.LoginDetails;
+import com.cac.model.Patient;
 import com.cac.model.UserInfo;
+import com.cac.repository.PatientRepository;
 import com.cac.repository.UserRepository;
 
 import jakarta.mail.MessagingException;
@@ -24,28 +26,9 @@ public class UserService {
 
     public UserInfo createUser(UserInfo userInfo) {
         userInfo.setRole(userInfo.getRole().toUpperCase());
-        if(userInfo.getRole().equals("ADMIN")) return createAdmin(userInfo);
         return userRepository.save(userInfo);
     }
 
-    public UserInfo createAdmin(UserInfo userInfo) {
-        // userInfo.setRole(userInfo.getRole().toUpperCase());
-
-        UserInfo savedAdmin = userRepository.save(userInfo);
-
-        String subject = "Welcome to Care & Cure";
-        String message = String.format("Your username : " + savedAdmin.getUsername() + "</br>"+ "and password : "+ savedAdmin.getPassword());
-
-        try{
-           emailService.sendEmail(savedAdmin.getEmailId(), subject, message);
-        } catch(Exception e){
-            userRepository.delete(savedAdmin);
-            throw new MailSendException("Failed to send Email");
-
-        }
-
-        return savedAdmin;
-    }
 
     public UserInfo getUserByUsername(String username) throws UserNotFoundException {
         UserInfo userData = userRepository.findByUsername(username)
@@ -67,7 +50,7 @@ public class UserService {
             return "Welcome Back, " + user.getName()+ "!";
         }
         if (("doctor".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("DOCTOR"))) {
-            System.out.println("doctor");
+            
             return "Welcome Back, " + user.getName()+ "!";
         }
         if ("patient".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("PATIENT")) {
@@ -75,6 +58,11 @@ public class UserService {
         } else {
             throw new UserNotFoundException("Invalid details. Try again!");
         }
+
+    }
+
+    public void deleteUser(UserInfo userInfo) {
+        userRepository.delete(userInfo);
     }
 
 }

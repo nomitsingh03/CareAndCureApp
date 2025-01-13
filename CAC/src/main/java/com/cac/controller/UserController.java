@@ -24,6 +24,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
 
     @PostMapping("/userRegister")
     public ResponseEntity<UserInfo> userLogin(@Valid @RequestBody UserInfo user) {
@@ -33,7 +34,9 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> login(
             @RequestBody LoginDetails loginDetails) throws UserNotFoundException {
-        return new ResponseEntity<>(userService.verifyLoginDetails(loginDetails), HttpStatus.OK);
+                String loginMessage = userService.verifyLoginDetails(loginDetails);
+
+        return new ResponseEntity<>(loginMessage, HttpStatus.OK);
     }
 
     @GetMapping("/viewUserInfo/{username}")

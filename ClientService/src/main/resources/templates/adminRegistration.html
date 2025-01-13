@@ -222,6 +222,13 @@
         <p th:text="${error}"></p>
       </div>
 
+      <!-- Display validation errors (list) -->
+      <div
+        th:if="${validationErrors!=null and validationErrors.containsKey('error')}"
+      >
+        <p class="error-message" th:text="${validationErrors['error']}"></p>
+      </div>
+
       <!-- Patient Registration Form -->
       <form th:action="@{/registerAdmin}" th:object="${admin}" method="post">
         <table>
@@ -236,6 +243,12 @@
                 placeholder="Enter Admin Name"
                 required
               />
+              <div
+                class="error-message"
+                th:if="${validationErrors != null and validationErrors.containsKey('name')}"
+              >
+                <p th:text="${validationErrors['name']}"></p>
+              </div>
             </td>
           </tr>
 
@@ -250,6 +263,12 @@
                 placeholder="Enter username"
                 required
               />
+              <div
+                class="error-message"
+                th:if="${validationErrors != null and validationErrors.containsKey('username')}"
+              >
+                <p th:text="${validationErrors['username']}"></p>
+              </div>
             </td>
           </tr>
 
@@ -260,10 +279,16 @@
               <input
                 type="email"
                 id="email"
-                th:field="*{emailId}"
+                th:field="*{email}"
                 placeholder="Enter email here"
                 required
               />
+              <div
+                class="error-message"
+                th:if="${validationErrors != null and validationErrors.containsKey('email')}"
+              >
+                <p th:text="${validationErrors['email']}"></p>
+              </div>
             </td>
           </tr>
           <!-- Submit Button -->
