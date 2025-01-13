@@ -158,6 +158,7 @@ public class PatientClientController {
 				// Parse validation errors from the response body
 				ObjectMapper objectMapper = new ObjectMapper();
 				try {
+					@SuppressWarnings("unchecked")
 					Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 					model.addAttribute("validationErrors", errors);
 
@@ -194,6 +195,7 @@ public class PatientClientController {
 		} catch (HttpStatusCodeException e) {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				model.addAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
@@ -238,6 +240,7 @@ public class PatientClientController {
 		} catch (HttpStatusCodeException e) {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				model.addAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
@@ -308,6 +311,7 @@ public class PatientClientController {
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			try {
+				@SuppressWarnings("unchecked")
 				Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				model.addAttribute("validationErrors", errors);
 			} catch (Exception ex) {
@@ -394,6 +398,7 @@ public class PatientClientController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/patientLogin")
 	public String patientLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
@@ -437,5 +442,35 @@ public class PatientClientController {
 		}
 		return "redirect:/patientLoginForm"; // Redirect back to the login page in case of failure
 	}
+
+	@GetMapping("/viewAllActivePatient")
+	public String getAllPatientByStatus(@RequestParam boolean active, Model model) {
+		List<Patient> patientList = new ArrayList<>();
+		String url = baseUrl + "/viewAllPatientByStatus?active="+active;
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/json");
+		HttpEntity<List<Patient>> requestEntity = new HttpEntity<>(patientList, headers);
+		try {
+			ResponseEntity<List<Patient>> response = restTemplate.exchange(
+					url,
+					HttpMethod.GET,
+					requestEntity,
+					new ParameterizedTypeReference<List<Patient>>() {
+					});
+			patientList = response.getBody();
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			model.addAttribute("errorMessage", "Unable to fetch Patient List. Please try again later.");
+			return "patientList";
+		}
+
+		if (patientList != null && patientList.size() != 0) {
+			model.addAttribute("patientList", patientList);
+			return "patientList";
+		} else {
+			model.addAttribute("errorMessage", "No Patient Record Found.");
+			return "patientList";
+		}
+	}
+	
 
 }

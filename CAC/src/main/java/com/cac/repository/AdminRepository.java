@@ -11,6 +11,5 @@ import com.cac.model.AdminInfo;
 public interface AdminRepository extends JpaRepository<AdminInfo, Integer> {
 
     Optional<AdminInfo> findByUsername(String username); 
-    // Query method to find by username
 
 }

@@ -1,7 +1,5 @@
 package com.cac.service;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Service;
@@ -77,7 +75,7 @@ public class AdminService {
         AdminInfo savedAdmin = adminRepository.save(adminInfo);
         try {
             // Create user information for admin login
-            UserInfo userInfo = new UserInfo(savedAdmin.getUsername(), adminInfo.getPassword(), "ADMIN", savedAdmin.getName());
+            UserInfo userInfo = new UserInfo(savedAdmin.getUsername(), adminInfo.getPassword(), savedAdmin.getName(), "ADMIN");
             userInfo = userService.createUser(userInfo);
 
             // Only send email if save was successful

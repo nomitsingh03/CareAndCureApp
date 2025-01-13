@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.cac.exception.UserNotFoundException;
 import com.cac.model.AdminInfo;
-import com.cac.model.UserInfo;
 import com.cac.service.AdminService;
 
 import jakarta.validation.Valid;

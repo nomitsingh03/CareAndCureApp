@@ -99,14 +99,15 @@ public class PatientService {
 	}
 	
 	public List<Patient> getPatientsByName(String name) throws UserNotFoundException{
-		List<Patient> patients = patientRepository.findByPatientNameAllIgnoreCase(name);
+		List<Patient> patients = patientRepository.findByPatientNameContainingIgnoreCase(name);
 		if(patients.isEmpty() || patients.size()==0) throw new UserNotFoundException("Patients not found with name : "+name);
 		return patients;
 	}
 	
-	public List<Patient> getAllActivePatient(){
-		return patientRepository.findByIsActive(true);
+	public List<Patient> getAllPatientByStatus(boolean flag){
+		return patientRepository.findByIsActive(flag);
 	}
+
 
 	public Patient updatePatient(int id, Patient patient) throws UserNotFoundException, MessagingException {
 		Patient oldDetail = patientRepository.findById(id)

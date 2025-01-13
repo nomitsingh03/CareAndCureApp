@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cac.exception.UserNotFoundException;
@@ -63,9 +64,9 @@ public class PatientController {
 		return new ResponseEntity<List<Patient>>(patientList, HttpStatus.OK);
 	}
 	
-	@GetMapping("/viewAllActivePatient")
-	public ResponseEntity<List<Patient>> getAllActivePatient(){
-		List<Patient> patientList = patientService.getAllActivePatient();
+	@GetMapping("/viewAllPatientByStatus")
+	public ResponseEntity<List<Patient>> getAllPatientByStatus(@RequestParam boolean active){
+		List<Patient> patientList = patientService.getAllPatientByStatus(active);
 		return new ResponseEntity<List<Patient>>(patientList, HttpStatus.OK);
 	}
 	

@@ -13,23 +13,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 import com.cac.client.model.AdminDto;
 import com.cac.client.model.LoginDetails;
-import com.cac.client.model.Patient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class AdminCleintController {
@@ -85,98 +80,110 @@ public class AdminCleintController {
 	}
 
 	// @PostMapping("/registerAdmin")
-	// public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
-	// 		throws JsonMappingException, JsonProcessingException {
-	// 	AdminDto adminObj = null;
-	// 	String requestUrl = "http://localhost:8084/userRegister"; // URL for the admin registration service
-	// 	HttpHeaders headers = new HttpHeaders();
-	// 	headers.set("Content-Type", "application/json"); // Set the content type to JSON
+	// public String submitAdminRegistration(@ModelAttribute("admin") AdminDto
+	// admin, Model model)
+	// throws JsonMappingException, JsonProcessingException {
+	// AdminDto adminObj = null;
+	// String requestUrl = "http://localhost:8084/userRegister"; // URL for the
+	// admin registration service
+	// HttpHeaders headers = new HttpHeaders();
+	// headers.set("Content-Type", "application/json"); // Set the content type to
+	// JSON
 
-	// 	// Create an HTTP entity with the admin data and headers
-	// 	admin.setRole("admin");
-	// 	HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
+	// // Create an HTTP entity with the admin data and headers
+	// admin.setRole("admin");
+	// HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
 
-	// 	try {
-	// 		// Send a POST request to register the admin and capture the response
-	// 		ResponseEntity<AdminDto> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
-	// 				AdminDto.class);
-	// 		adminObj = response.getBody(); // Get the registered admin object from the response
+	// try {
+	// // Send a POST request to register the admin and capture the response
+	// ResponseEntity<AdminDto> response = restTemplate.exchange(requestUrl,
+	// HttpMethod.POST, requestEntity,
+	// AdminDto.class);
+	// adminObj = response.getBody(); // Get the registered admin object from the
+	// response
 
-	// 		// Add admin details to the model for display on the status page
-	// 	model.addAttribute("username", admin.getUsername());
-	// 	model.addAttribute("email", admin.getEmailId());
-	// 	model.addAttribute("admin", true);
-	// 	return "statuspage";
-	// 	} catch (HttpStatusCodeException e) {
-	// 		if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode() == HttpStatus.CONFLICT) {
-	// 			// Parse validation errors from the response body
-	// 			ObjectMapper objectMapper = new ObjectMapper();
-	// 			try {
-	// 				Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-	// 				model.addAttribute("validationErrors", errors);
+	// // Add admin details to the model for display on the status page
+	// model.addAttribute("username", admin.getUsername());
+	// model.addAttribute("email", admin.getEmailId());
+	// model.addAttribute("admin", true);
+	// return "statuspage";
+	// } catch (HttpStatusCodeException e) {
+	// if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode() ==
+	// HttpStatus.CONFLICT) {
+	// // Parse validation errors from the response body
+	// ObjectMapper objectMapper = new ObjectMapper();
+	// try {
+	// Map<String, String> errors =
+	// objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+	// model.addAttribute("validationErrors", errors);
 
-	// 			} catch (Exception parseException) {
-	// 				model.addAttribute("errorMessage", "An error occurred while parsing the validation errors.");
-	// 			}
-	// 			return "registration";
-	// 		} else {
-	// 			model.addAttribute("errorMessage", "Unexpected error: " + e.getMessage());
-	// 		}
-	// 		return "statusPage";
-	// 	} catch (Exception e) {
-	// 		model.addAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
-	// 		return "statusPage";
-	// 	}		
+	// } catch (Exception parseException) {
+	// model.addAttribute("errorMessage", "An error occurred while parsing the
+	// validation errors.");
+	// }
+	// return "registration";
+	// } else {
+	// model.addAttribute("errorMessage", "Unexpected error: " + e.getMessage());
+	// }
+	// return "statusPage";
+	// } catch (Exception e) {
+	// model.addAttribute("errorMessage", "An unexpected error occurred: " +
+	// e.getMessage());
+	// return "statusPage";
+	// }
 
 	// }
 
-	public String generatePassword(){
-        return UUID.randomUUID().toString().substring(0,8);
-    }
+	public String generatePassword() {
+		return UUID.randomUUID().toString().substring(0, 8);
+	}
 
 	@PostMapping("/registerAdmin")
-public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
-        throws JsonMappingException, JsonProcessingException {
-    AdminDto adminObj = null;
-	admin.setPassword(generatePassword());
-    String requestUrl = "http://localhost:8084/registerAdmin"; // URL for the admin registration service
-    HttpHeaders headers = new HttpHeaders();
-    headers.set("Content-Type", "application/json"); // Set the content type to JSON
+	public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
+			throws JsonMappingException, JsonProcessingException {
+		AdminDto adminObj = null;
+		admin.setPassword(generatePassword());
+		String requestUrl = "http://localhost:8084/registerAdmin"; // URL for the admin registration service
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
-    HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
+		HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
 
-    try {
-        // Send a POST request to register the admin and capture the response
-        ResponseEntity<AdminDto> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity, AdminDto.class);
-        adminObj = response.getBody(); // Get the registered admin object from the response
+		try {
+			// Send a POST request to register the admin and capture the response
+			ResponseEntity<AdminDto> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
+					AdminDto.class);
+			adminObj = response.getBody(); // Get the registered admin object from the response
 
-        // Add admin details to the model for display on the status page
-        model.addAttribute("username", admin.getUsername());
-        model.addAttribute("email", admin.getEmail());
-        model.addAttribute("admin", true);
-        return "statuspage";
+			// Add admin details to the model for display on the status page
+			model.addAttribute("username", admin.getUsername());
+			model.addAttribute("email", admin.getEmail());
 
-    } catch (HttpStatusCodeException e) {
-        // Handle specific HTTP status codes
-        if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode() == HttpStatus.CONFLICT) {
-            // Parse validation errors from the response body
-            ObjectMapper objectMapper = new ObjectMapper();
-                Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
-                model.addAttribute("validationErrors", errors);
+			model.addAttribute("admin", true);
+			return "statuspage";
 
-            return "adminRegistration";
-        } else if (e.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-                model.addAttribute("errorMessage", e.getResponseBodyAsString());
-            return "statusPage";
-        } else {
-            model.addAttribute("errorMessage", "Unexpected error: " + e.getMessage());
-            return "statusPage";
-        }
-    } catch (Exception e) {
-        model.addAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
-        return "statusPage";
-    }
-}
+		} catch (HttpStatusCodeException e) {
+			// Handle specific HTTP status codes
+			if (e.getStatusCode() == HttpStatus.BAD_REQUEST || e.getStatusCode() == HttpStatus.CONFLICT) {
+				// Parse validation errors from the response body
+				ObjectMapper objectMapper = new ObjectMapper();
+				Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				model.addAttribute("validationErrors", errors);
+
+				return "adminRegistration";
+			} else if (e.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+				model.addAttribute("errorMessage", e.getResponseBodyAsString());
+				return "statusPage";
+			} else {
+				model.addAttribute("errorMessage", "Unexpected error: " + e.getMessage());
+				return "statusPage";
+			}
+		} catch (Exception e) {
+			model.addAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
+			return "statusPage";
+		}
+	}
+
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
@@ -190,7 +197,7 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
 			return "redirect:/adminLoginForm";
 		}
 
-		String requestUrl = "http://localhost:8084/loginAdmin?username="+username+"&password="+password;
+		String requestUrl = "http://localhost:8084/loginAdmin?username=" + username + "&password=" + password;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
@@ -203,12 +210,13 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
 			String message = response.getBody();
 			session.setAttribute("message", message);
 			session.setAttribute("username", username);
+
 			session.setAttribute("userRole", "admin");
 			return "redirect:/adminPage"; // Admin-specific page
 
 		} catch (HttpStatusCodeException e) {
 			ObjectMapper objectMapper = new ObjectMapper();
-			
+
 			try {
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				session.setAttribute("errorMessage", errorMessage.get("error"));

@@ -171,6 +171,7 @@
             <option value="" disabled selected>--Select an Option--</option>
             <option value="name">Name</option>
             <option value="id">ID</option>
+            <option value="status">Status</option>
         </select>
     </div>
 
@@ -188,6 +189,19 @@
         <form th:action="@{/findPatientById}" th:method="get">
             <label for="id">Search By Patient ID:</label>
             <input type="number" id="id" name="patientId" placeholder="Enter patient ID..." required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- Form to Search by Status -->
+    <div id="searchByStatusForm" class="form-container" style="display: none;">
+        <form th:action="@{/viewAllActivePatient}" th:method="get">
+            <label for="status">Search By Patient Status:</label>
+            <select id="searchBy" name="active">
+                <!-- <option value="" disabled selected>--Select an Option--</option> -->
+                <option value="true" selected>Active</option>
+                <option value="false">InActive</option>
+            </select>
             <button type="submit">Search</button>
         </form>
     </div>
@@ -210,16 +224,24 @@
             const searchBy = document.getElementById("searchBy").value;
             const nameForm = document.getElementById("searchByNameForm");
             const idForm = document.getElementById("searchByIdForm");
+            const statusForm = document.getElementById("searchByStatusForm");
 
             if (searchBy === "name") {
                 nameForm.style.display = "block";
+                statusForm.style.display="none";
                 idForm.style.display = "none";
             } else if (searchBy === "id") {
                 nameForm.style.display = "none";
+                statusForm.style.display="none";
                 idForm.style.display = "block";
-            } else {
+            }  else if (searchBy === "status") {
                 nameForm.style.display = "none";
                 idForm.style.display = "none";
+                statusForm.style.display="block";
+            }else {
+                nameForm.style.display = "none";
+                idForm.style.display = "none";
+                statusForm.style.display="none";
             }
         }
     </script>
