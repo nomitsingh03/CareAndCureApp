@@ -1,33 +1,32 @@
 package com.cac.client.controller;
 
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 import com.cac.client.model.AdminDto;
 import com.cac.client.model.LoginDetails;
-import com.cac.client.model.Patient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class AdminCleintController {
@@ -82,14 +81,20 @@ public class AdminCleintController {
 		}
 	}
 
+	private String generateRandomPassword() {
+		// Generate a more secure random password
+		return UUID.randomUUID().toString().substring(0, 8);
+	}
+
 	@PostMapping("/registerAdmin")
 	public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, Model model)
 			throws JsonMappingException, JsonProcessingException {
 		AdminDto adminObj = null;
-		String requestUrl = "http://localhost:8084/userRegister"; // URL for the admin registration service
+		String requestUrl = "http://localhost:8084/registerAdmin"; // URL for the admin registration service
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
+		admin.setPassword(generateRandomPassword());
 		// Create an HTTP entity with the admin data and headers
 		admin.setRole("admin");
 		HttpEntity<AdminDto> requestEntity = new HttpEntity<>(admin, headers);
@@ -99,26 +104,30 @@ public class AdminCleintController {
 			ResponseEntity<AdminDto> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,
 					AdminDto.class);
 			adminObj = response.getBody(); // Get the registered admin object from the response
-		} catch (HttpClientErrorException e) {
-			// Handle client errors by extracting the error message from the response
+		} catch (HttpStatusCodeException e) {
 			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode rootNode = objectMapper.readTree(e.getResponseBodyAsString());
-			String errorMessage = rootNode.path("message").asText();
-			model.addAttribute("errorMessage", errorMessage); // Add the error message to the model
-			return "statusPage"; // Return the status page with the error message
+			if (e.getStatusCode() == HttpStatus.CONFLICT) {
+				Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
+				model.addAttribute("validationErrors", errors);
+				return "adminRegistration";
+			} else {
+				model.addAttribute("errorMessage", e.getResponseBodyAsString());
+				return "statuspage";
+			}
+
 		}
 		// Check if the admin object is null, indicating a server issue
 		if (adminObj == null) {
 			model.addAttribute("errorMessage", "Server Issue. Try Again!!!");
 		}
-		// Add admin details to the model for display on the status page
 		model.addAttribute("username", admin.getUsername());
-		model.addAttribute("password", admin.getPassword());
+		model.addAttribute("email", admin.getEmail());
 		model.addAttribute("admin", true);
 		return "statuspage";
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/adminLogin")
 	public String adminLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {
@@ -132,12 +141,12 @@ public class AdminCleintController {
 			return "redirect:/adminLoginForm";
 		}
 
-		String requestUrl = "http://localhost:8084/login";
+		String requestUrl = "http://localhost:8084/loginAdmin?username=" + username + "&password=" + password;
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Content-Type", "application/json"); // Set the content type to JSON
 
-		LoginDetails details = new LoginDetails(username, password, "admin");
-		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(details, headers);
+		// LoginDetails details = new LoginDetails(username, password, "admin");
+		HttpEntity<LoginDetails> requestEntity = new HttpEntity<>(null, headers);
 
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(requestUrl, HttpMethod.POST, requestEntity,

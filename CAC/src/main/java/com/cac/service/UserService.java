@@ -26,7 +26,7 @@ public class UserService {
     }
 
     public String verifyLoginDetails(LoginDetails loginDetails) throws UserNotFoundException {
-        
+
         UserInfo user = userRepository.findByUsername(loginDetails.getUsername()).orElseThrow(
                 () -> new UserNotFoundException("User not found with username:" + loginDetails.getUsername()));
 
@@ -36,11 +36,11 @@ public class UserService {
 
         // Check if the role matches the login type
         if (("admin".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("ADMIN"))) {
-            return "Welcome Back, " + user.getName()+ "!";
+            return "Welcome Back, " + user.getName() + "!";
         }
         if (("doctor".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("DOCTOR"))) {
             System.out.println("doctor");
-            return "Welcome Back, " + user.getName()+ "!";
+            return "Welcome Back, " + user.getName() + "!";
         }
         if ("patient".equalsIgnoreCase(loginDetails.getLoginType()) && user.getRole().equals("PATIENT")) {
             return "Welcome Back, " + user.getPassword() + "!";

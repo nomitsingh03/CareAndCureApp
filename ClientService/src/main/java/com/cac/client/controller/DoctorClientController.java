@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpSession;
 
+@SuppressWarnings("unused")
 @Controller
 public class DoctorClientController {
 
@@ -94,6 +95,7 @@ public class DoctorClientController {
 		} catch (HttpStatusCodeException e) {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				session.setAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {

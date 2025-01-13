@@ -158,6 +158,7 @@ public class PatientClientController {
 				// Parse validation errors from the response body
 				ObjectMapper objectMapper = new ObjectMapper();
 				try {
+					@SuppressWarnings("unchecked")
 					Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 					model.addAttribute("validationErrors", errors);
 
@@ -194,6 +195,7 @@ public class PatientClientController {
 		} catch (HttpStatusCodeException e) {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				model.addAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
@@ -238,6 +240,7 @@ public class PatientClientController {
 		} catch (HttpStatusCodeException e) {
 			try {
 				ObjectMapper objectMapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
 				Map<String, String> errorMessage = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				model.addAttribute("errorMessage", errorMessage.get("error"));
 			} catch (Exception parseException) {
@@ -308,6 +311,7 @@ public class PatientClientController {
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			try {
+				@SuppressWarnings("unchecked")
 				Map<String, String> errors = objectMapper.readValue(e.getResponseBodyAsString(), Map.class);
 				model.addAttribute("validationErrors", errors);
 			} catch (Exception ex) {
@@ -394,6 +398,7 @@ public class PatientClientController {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@PostMapping("/patientLogin")
 	public String patientLogin(@RequestParam String username, @RequestParam String password, Model model,
 			HttpSession session) {

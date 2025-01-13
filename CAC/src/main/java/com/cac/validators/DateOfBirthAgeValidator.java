@@ -9,6 +9,7 @@ import java.time.Period;
 import com.cac.annotations.ValidDateOfBirth;
 import com.cac.model.Patient;
 
+@SuppressWarnings("unused")
 public class DateOfBirthAgeValidator implements ConstraintValidator<ValidDateOfBirth, Patient> {
 
     @Override
