@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}"/>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
     <style>
         /* Base Reset */
         * {
@@ -37,7 +37,7 @@
             overflow: hidden;
             display: flex;
             animation: fadeIn 0.6s ease-in-out;
-            
+
         }
 
         @keyframes fadeIn {
@@ -57,7 +57,7 @@
             flex: 1;
             background: url("https://cdn.dribbble.com/users/8619169/screenshots/16514320/media/0dc828901898c59928c3d69718791941.gif") no-repeat center center;
             background-size: contain;
-            
+
         }
 
         /* Form Section */
@@ -84,6 +84,27 @@
             color: #34495e;
             margin-bottom: 10px;
             display: inline-block;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
+            background: #f9f9f9;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input:focus {
+            border-color: #3498db;
+            background: #ffffff;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         button {
