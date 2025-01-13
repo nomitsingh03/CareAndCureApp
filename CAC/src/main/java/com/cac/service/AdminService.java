@@ -77,7 +77,7 @@ public class AdminService {
         AdminInfo savedAdmin = adminRepository.save(adminInfo);
         try {
             // Create user information for admin login
-            UserInfo userInfo = new UserInfo(savedAdmin.getUsername(), adminInfo.getPassword(), "ADMIN", savedAdmin.getEmail());
+            UserInfo userInfo = new UserInfo(savedAdmin.getUsername(), adminInfo.getPassword(), "ADMIN", savedAdmin.getName());
             userInfo = userService.createUser(userInfo);
 
             // Only send email if save was successful
@@ -116,5 +116,11 @@ public class AdminService {
 
     public AdminInfo getAdminInfo(String username) throws UserNotFoundException{
         return adminRepository.findByUsername(username).orElseThrow(()-> new UserNotFoundException("Admin Not Foud with username: "+ username));
+    }
+
+    public AdminInfo getUserByUsername(String username) throws UserNotFoundException {
+        AdminInfo userData = adminRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found with username:" + username));
+        return userData;
     }
 }

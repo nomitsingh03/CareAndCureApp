@@ -225,7 +225,7 @@ public String submitAdminRegistration(@ModelAttribute("admin") AdminDto admin, M
 	public String viewProfile(@RequestParam String username, Model model) {
 
 		AdminDto dto = null;
-		String url = "http://localhost:8084/viewUserInfo/" + username;
+		String url = "http://localhost:8084/viewAdminInfo/" + username;
 		try {
 			ResponseEntity<AdminDto> response = restTemplate.exchange(
 					url,

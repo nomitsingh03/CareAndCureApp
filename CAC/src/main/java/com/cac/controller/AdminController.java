@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.cac.exception.UserNotFoundException;
 import com.cac.model.AdminInfo;
+import com.cac.model.UserInfo;
 import com.cac.service.AdminService;
 
 import jakarta.validation.Valid;
@@ -36,5 +37,11 @@ public class AdminController {
     public ResponseEntity<AdminInfo> updateAdmin(@PathVariable int id, @Valid @RequestBody AdminInfo adminInfo)
             throws Exception {
         return new ResponseEntity<AdminInfo>(adminService.updateAdmin(id, adminInfo), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/viewAdminInfo/{username}")
+    public ResponseEntity<AdminInfo> getAdminInfo(@PathVariable String username) throws UserNotFoundException {
+        AdminInfo adminInfo = adminService.getUserByUsername(username);
+        return new ResponseEntity<>(adminInfo, HttpStatus.OK);
     }
 }
